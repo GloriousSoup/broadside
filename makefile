@@ -8,12 +8,15 @@ DEBUG=-ggdb3
 CFLAGS= -fno-strict-aliasing -DUNIV_LINUX \
 	-Werror -Wall -Wextra $(OPTIMISE) $(DEBUG) \
 	-I "/usr/local/include"
+CFLAGSNOWARN= -fno-strict-aliasing -DUNIV_LINUX \
+	$(OPTIMISE) $(DEBUG) \
+	-I "/usr/local/include"
 LIBS=-Wl,-Bsymbolic-functions \
 	-rdynamic -lrt -lpthread \
 	-lGL -lSDL2main -lSDL2 \
 	-L "/usr/local/lib"
 
-RAW_COMMONOBJECTS=CApp.o
+RAW_COMMONOBJECTS=CApp.o glhack.o render.o SimpleMesh.o util.o assetloader.o stbi_image.o
 RAW_TARGETOBJECTS=$(TARGETS:%=%.o)
 COMMONOBJECTS=$(RAW_COMMONOBJECTS:%=build/%)
 TARGETOBJECTS=$(RAW_TARGETOBJECTS:%=build/%)
@@ -33,6 +36,11 @@ build:
 clean:
 	rm -f $(TARGETS)
 	rm -f build/*
+
+build/stbi_image.o: stbi_image.cpp | build
+	$(CC) $(CFLAGSNOWARN) -c stbi_image.cpp -o build/stbi_image.o
+	$(CC) $(CFLAGSNOWARN) -MM stbi_image.cpp > build/stbi_image.d
+	sed -i '1s/^/build\//' build/$*.d
 
 build/%.o: %.cpp | build
 	$(CC) $(CFLAGS) -c $*.cpp -o build/$*.o
