@@ -3,6 +3,8 @@
 GLShader gShipShader;
 
 float x,y;
+#include "BadMesh.h" 
+BadMesh * ship;
 
 CApp::CApp() {
 	window = 0;
@@ -70,6 +72,8 @@ bool CApp::OnInit() {
 	RenderInit();
 
 	gShipShader.SetSources( "data/ship.vert", "data/ship.frag" );
+	ship = new BadMesh();
+	ship->Load( "data/pirate-ship.obj" );
 
 	glClearColor(0, 0, 0, 0);
 
@@ -131,6 +135,7 @@ void CApp::OnCleanup() {
 }
 
 void CApp::OnRender() {
+	glClearColor( 0.4f,0.4f,0.5f, 1.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -144,12 +149,19 @@ void CApp::OnRender() {
 
 
 	gShipShader.Use();
-	glBegin(GL_QUADS);
-	glColor3f(1, 0, 0); glVertex3f(x+0, y+0, 0);
-	glColor3f(1, 1, 0); glVertex3f(x+100, y+0, 0);
-	glColor3f(1, 0, 1); glVertex3f(x+100, y+100, 0);
-	glColor3f(1, 1, 1); glVertex3f(x+0, y+100, 0);
-	glEnd();
+	static int a = 0;
+	a += 1;
+	if( a & 1 ) {
+		glBegin(GL_QUADS);
+		glColor3f(1, 0, 0); glVertex3f(x+0, y+0, 0);
+		glColor3f(1, 1, 0); glVertex3f(x+100, y+0, 0);
+		glColor3f(1, 0, 1); glVertex3f(x+100, y+100, 0);
+		glColor3f(1, 1, 1); glVertex3f(x+0, y+100, 0);
+		glEnd();
+	}
+	
+	GLLoadTransform(x,y,0.0f, 1.0f, 0.0f );
+	ship->DrawTriangles();
 
 	SDL_GL_SwapWindow(window);
 }

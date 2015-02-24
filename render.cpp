@@ -227,6 +227,7 @@ extern bool gUseShaders;
 
 GLShader DefaultShaderProgram;
 void RenderInit() {
+	PrepareShaderPrefixes();
 	LoadShader( DefaultShader, "data/default.vert", "data/default.frag" );
 }
 
@@ -491,7 +492,7 @@ void GLWorldToScreenPoint(Vec3 &output, Vec3 input)
 //void GLLoadTransformWithAxisRotation(float x, float y, float z, float sx, float sy, float sz, float orientation, Vec2 axis, float ammount) {
 //}
 
-void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, float orientation, Vec2 skew = Vec2(0, 0))
+void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, float orientation, Vec2 skew )
 {
 	GLfloat mvmat[16];
 	float fSin = sinf(orientation), fCos = cosf(orientation);
@@ -518,7 +519,7 @@ void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, fl
 	SetUniformMat(mvLocation, mvmat);
 	SetUniformMat(projLocation, m_ProjectionMatrix);
 }
-void GLLoadTransform(float x, float y, float z, float scale, float orientation, Vec2 skew = Vec2(0, 0))
+void GLLoadTransform(float x, float y, float z, float scale, float orientation, Vec2 skew )
 {
 	GLLoadTransform(x,y,z, scale,scale,scale, orientation, skew);
 }

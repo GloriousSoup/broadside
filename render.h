@@ -112,6 +112,10 @@ void RenderInit();
 void LoadShader(GLShader &ShaderProgram, const char *vshad, const char *fshad );
 void ReloadShader(GLShader &ShaderProgram, const char *vshad, const char *fshad );
 
+#include "geom.h"
+void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, float orientation, Vec2 skew = Vec2(0, 0));
+void GLLoadTransform(float x, float y, float z, float scale, float orientation, Vec2 skew = Vec2(0, 0));
+
 #define GL_PREMULTIPLIED_ALPHA 0
 #define GL_INVERT_Y 1
 
