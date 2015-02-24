@@ -2,7 +2,7 @@
 
 GLShader gShipShader;
 
-float x,y;
+float x,y,z;
 #include "BadMesh.h" 
 BadMesh * ship;
 
@@ -93,7 +93,7 @@ bool CApp::OnInit() {
 	return true;
 }
 
-bool kUp,kDown,kLeft,kRight;
+bool kUp,kDown,kLeft,kRight,kForward,kBack;
 
 void CApp::OnEvent(SDL_Event* Event) {
 	switch(Event->type) {
@@ -104,6 +104,8 @@ void CApp::OnEvent(SDL_Event* Event) {
 				case SDLK_DOWN: kDown = true; break;
 				case SDLK_LEFT: kLeft = true; break;
 				case SDLK_RIGHT: kRight = true; break;
+				case SDLK_HOME: kForward = true; break;
+				case SDLK_END: kBack = true; break;
 				case SDLK_ESCAPE: Running = false; break;
 			}
 		}
@@ -114,17 +116,24 @@ void CApp::OnEvent(SDL_Event* Event) {
 				case SDLK_DOWN: kDown = false; break;
 				case SDLK_LEFT: kLeft = false; break;
 				case SDLK_RIGHT: kRight = false; break;
+				case SDLK_HOME: kForward = false; break;
+				case SDLK_END: kBack = false; break;
 			}
 		}
 		break;
 	}
 }
 
+int win_width;
+int win_height;
+
 void CApp::OnLoop() {
-	float speed = 1.0f;
+	float speed = 0.01f;
 	x += speed * (kRight - kLeft);
 	y += speed * (kDown - kUp);
+	z += speed * (kForward - kBack);
 	gShipShader.ReloadIfNecessary();
+	SDL_GetWindowSize( window, &win_width, &win_height );
 }
 
 void CApp::OnCleanup() {
@@ -138,6 +147,7 @@ void CApp::OnRender() {
 	glClearColor( 0.4f,0.4f,0.5f, 1.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	Perspective();
 
 	DefaultShader.Use();
 	glBegin(GL_QUADS);
@@ -160,7 +170,7 @@ void CApp::OnRender() {
 		glEnd();
 	}
 	
-	GLLoadTransform(x,y,0.0f, 1.0f, 0.0f );
+	GLLoadTransform(x,y,z, 1.0f, 0.0f );
 	ship->DrawTriangles();
 
 	SDL_GL_SwapWindow(window);

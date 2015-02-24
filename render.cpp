@@ -468,6 +468,14 @@ char* Mtx2Str(float* p)
 
 GLfloat m_ProjectionMatrix[16];
 
+void Perspective() {
+	GLPerspective(m_ProjectionMatrix, 2.0f, (float)win_width / (float)win_height, 0.1f, 100.0f);
+}
+void Orthographic() {
+	memcpy( m_ProjectionMatrix, &gIdentityMat.x.x, sizeof( float ) * 16 );
+}
+
+
 void GLMultiplyVectorMatrix(Vec3 &output, const float* pM2, const Vec3 vec)
 {
 	GLfloat mvvec[4];
@@ -492,7 +500,7 @@ void GLWorldToScreenPoint(Vec3 &output, Vec3 input)
 //void GLLoadTransformWithAxisRotation(float x, float y, float z, float sx, float sy, float sz, float orientation, Vec2 axis, float ammount) {
 //}
 
-void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, float orientation, Vec2 skew )
+void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, float orientation )
 {
 	GLfloat mvmat[16];
 	float fSin = sinf(orientation), fCos = cosf(orientation);
@@ -500,14 +508,7 @@ void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, fl
 	mvmat[0*4+0] = fCos*sx;
 	mvmat[0*4+2] = -fSin*sx;
 
-	if (skew.dot(skew) > 0.00001f) {
-		//skew.clampmag(1.0f);
-		mvmat[1*4+0] = skew.x * sy;
-		mvmat[1*4+1] = sqrtf(1.0f - skew.dot(skew)) * sy;
-		mvmat[1*4+2] = skew.y * sy;
-	} else {
-		mvmat[1*4+1] = sy;
-	}
+	mvmat[1*4+1] = sy;
 
 	mvmat[2*4+0] = fSin*sz;
 	mvmat[2*4+2] = fCos*sz;
@@ -519,9 +520,9 @@ void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, fl
 	SetUniformMat(mvLocation, mvmat);
 	SetUniformMat(projLocation, m_ProjectionMatrix);
 }
-void GLLoadTransform(float x, float y, float z, float scale, float orientation, Vec2 skew )
+void GLLoadTransform(float x, float y, float z, float scale, float orientation )
 {
-	GLLoadTransform(x,y,z, scale,scale,scale, orientation, skew);
+	GLLoadTransform(x,y,z, scale,scale,scale, orientation );
 }
 Vec3 wsLightDir(0.5f, 1.0f, -0.5f);
 Vec3 g_lightColour(1,1,1);
@@ -583,7 +584,7 @@ void DrawTree(float x, float y, float z, float orientation, float scale, int tre
 	DefaultShaderProgram.Use();
 
 	if (treeType < 4)
-        GLLoadTransform(x,y,z, scale,scaleY,scale, orientation, skew);
+        GLLoadTransform(x,y,z, scale,scaleY,scale, orientation);
     else
         GLLoadTransform(x+skew.x/5,y,z+skew.y/5, scale,scaleY,scale, orientation);
 	GLSetObjectSpaceLightDir(orientation);
