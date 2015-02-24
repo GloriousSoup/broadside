@@ -5,6 +5,8 @@
 #define _CAPP_H_
 
 #if _WIN32
+#pragma comment(lib,"SDL2.lib")
+#pragma comment(lib,"OpenGL32.lib")
 #include <SDL.h>
 #include <SDL_opengl.h>
 #else
