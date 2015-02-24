@@ -7,8 +7,8 @@
 #if _WIN32
 #pragma comment(lib,"SDL2.lib")
 #pragma comment(lib,"OpenGL32.lib")
-#include <SDL.h>
-#include <SDL_opengl.h>
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_opengl.h"
 #else
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
