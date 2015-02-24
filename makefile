@@ -40,7 +40,7 @@ clean:
 build/stbi_image.o: stbi_image.cpp | build
 	$(CC) $(CFLAGSNOWARN) -c stbi_image.cpp -o build/stbi_image.o
 	$(CC) $(CFLAGSNOWARN) -MM stbi_image.cpp > build/stbi_image.d
-	sed -i '1s/^/build\//' build/$*.d
+	sed -i '1s/^/build\//' build/stbi_image.d
 
 build/%.o: %.cpp | build
 	$(CC) $(CFLAGS) -c $*.cpp -o build/$*.o

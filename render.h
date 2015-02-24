@@ -87,6 +87,10 @@ public:
 		m_pCurrent = this;
 	}
 	static GLShader* Current() { return m_pCurrent; }
+	char m_vertFilename[128];
+	char m_fragFilename[128];
+	void SetSources( const char *vert, const char *frag );
+	void ReloadIfNecessary();
 };
 
 # define ShaderUniformExists(_s, _n) _s._n != 0xFFFFFFFF
@@ -102,6 +106,8 @@ public:
 # define SetUniformMat(_n, _v) glUniformMatrix4fv(GLShader::Current()->_n, 1, false, _v)
 
 extern GLShader DefaultShader;
+
+void RenderInit();
 
 void LoadShader(GLShader &ShaderProgram, const char *vshad, const char *fshad );
 void ReloadShader(GLShader &ShaderProgram, const char *vshad, const char *fshad );

@@ -10,4 +10,5 @@ void main() {
 	Color = gl_Color;
 	Normal = gl_Normal;
 	Tex = vec2(gl_MultiTexCoord0);
+	Pos = gl_Vertex.xyz;
 }

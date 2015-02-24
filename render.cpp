@@ -14,6 +14,7 @@ void DrawMesh(float x, float y, float z, float orientation, float scale, int nSu
 void DrawStringAtPoint(const Vec3& v, float fScale, U32 nClr, const char* sz, ...);
 
 GLShader* GLShader::m_pCurrent = NULL;
+GLShader DefaultShader;
 
 #ifdef _GLES
 # define ATTRIB_PRE "m"
@@ -162,6 +163,14 @@ void ReloadShader(GLShader &ShaderProgram, const char *vshad, const char *fshad 
 	}
 }
 
+void GLShader::SetSources( const char *vert, const char *frag ) {
+	strcpy( m_vertFilename, vert );
+	strcpy( m_fragFilename, frag );
+	LoadShader( *this, m_vertFilename, m_fragFilename );
+}
+void GLShader::ReloadIfNecessary() {
+	ReloadShader( *this, m_vertFilename, m_fragFilename );
+}
 
 GLuint GetUniformLocation(GLShader& ShaderProgram, const char* pName)
 {
@@ -217,6 +226,9 @@ extern int win_height;
 extern bool gUseShaders;
 
 GLShader DefaultShaderProgram;
+void RenderInit() {
+	LoadShader( DefaultShader, "data/default.vert", "data/default.frag" );
+}
 
 extern GLuint textureLocation;
 extern float gCubeAngle;

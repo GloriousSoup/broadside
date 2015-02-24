@@ -2,6 +2,8 @@
 
 GLShader gShipShader;
 
+float x,y;
+
 CApp::CApp() {
 	window = 0;
 	context = 0;
@@ -65,8 +67,9 @@ bool CApp::OnInit() {
 		return false;
 	}
 
-	//LoadShader( gShipShader, "ship.vert", "ship.frag" );
-	LoadShader( gShipShader, "vert.glsl", "frag.glsl" );
+	RenderInit();
+
+	gShipShader.SetSources( "data/ship.vert", "data/ship.frag" );
 
 	glClearColor(0, 0, 0, 0);
 
@@ -86,13 +89,38 @@ bool CApp::OnInit() {
 	return true;
 }
 
+bool kUp,kDown,kLeft,kRight;
+
 void CApp::OnEvent(SDL_Event* Event) {
-	if(Event->type == SDL_QUIT) {
-		Running = false;
+	switch(Event->type) {
+		case SDL_QUIT: Running = false; break;
+		case SDL_KEYDOWN: {
+			switch(Event->key.keysym.sym) {
+				case SDLK_UP: kUp = true; break;
+				case SDLK_DOWN: kDown = true; break;
+				case SDLK_LEFT: kLeft = true; break;
+				case SDLK_RIGHT: kRight = true; break;
+				case SDLK_ESCAPE: Running = false; break;
+			}
+		}
+		break;
+		case SDL_KEYUP: {
+			switch(Event->key.keysym.sym) {
+				case SDLK_UP: kUp = false; break;
+				case SDLK_DOWN: kDown = false; break;
+				case SDLK_LEFT: kLeft = false; break;
+				case SDLK_RIGHT: kRight = false; break;
+			}
+		}
+		break;
 	}
 }
 
 void CApp::OnLoop() {
+	float speed = 1.0f;
+	x += speed * (kRight - kLeft);
+	y += speed * (kDown - kUp);
+	gShipShader.ReloadIfNecessary();
 }
 
 void CApp::OnCleanup() {
@@ -106,11 +134,21 @@ void CApp::OnRender() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
+	DefaultShader.Use();
 	glBegin(GL_QUADS);
 	glColor3f(1, 0, 0); glVertex3f(0, 0, 0);
 	glColor3f(1, 1, 0); glVertex3f(100, 0, 0);
 	glColor3f(1, 0, 1); glVertex3f(100, 100, 0);
 	glColor3f(1, 1, 1); glVertex3f(0, 100, 0);
+	glEnd();
+
+
+	gShipShader.Use();
+	glBegin(GL_QUADS);
+	glColor3f(1, 0, 0); glVertex3f(x+0, y+0, 0);
+	glColor3f(1, 1, 0); glVertex3f(x+100, y+0, 0);
+	glColor3f(1, 0, 1); glVertex3f(x+100, y+100, 0);
+	glColor3f(1, 1, 1); glVertex3f(x+0, y+100, 0);
 	glEnd();
 
 	SDL_GL_SwapWindow(window);
