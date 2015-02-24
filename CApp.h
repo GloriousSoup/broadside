@@ -5,10 +5,8 @@
 #define _CAPP_H_
 
 #if _WIN32
-#define WINGDIAPI
-#define APIENTRY
 #include <SDL.h>
-#include <GL/gl.h>
+#include <SDL_opengl.h>
 #else
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
