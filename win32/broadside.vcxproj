@@ -76,11 +76,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\assetloader.cpp" />
     <ClCompile Include="..\broadside.cpp" />
     <ClCompile Include="..\CApp.cpp" />
+    <ClCompile Include="..\geom.cpp" />
+    <ClCompile Include="..\render.cpp" />
+    <ClCompile Include="..\SimpleMesh.cpp" />
+    <ClCompile Include="..\stbi_image.cpp" />
+    <ClCompile Include="..\util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\assetloader.h" />
     <ClInclude Include="..\CApp.h" />
+    <ClInclude Include="..\geom.h" />
+    <ClInclude Include="..\render.h" />
+    <ClInclude Include="..\SimpleMesh.h" />
+    <ClInclude Include="..\stbi_image.h" />
+    <ClInclude Include="..\ttycolours.h" />
+    <ClInclude Include="..\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

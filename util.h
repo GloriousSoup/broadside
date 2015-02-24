@@ -15,8 +15,10 @@
 // for whitespace
 #include <wctype.h>
 
+#ifndef _WIN32
 #ifndef thread_local
 #define thread_local __thread
+#endif
 #endif
 
 template<typename T>
@@ -57,6 +59,10 @@ inline uint32_t jenkins_one_at_a_time_hash( const char *key, size_t len ) {
 time_t get_mtime(const char *path, time_t def );
 time_t get_ctime(const char *path, time_t def );
 int is_redirected();
+
+#ifdef _WIN32
+#pragma warning(disable: 4996)
+#endif
 
 inline int eprintf( const char *format, ... ) {
 	va_list ap;

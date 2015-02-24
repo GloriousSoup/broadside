@@ -2,7 +2,7 @@
 
 #include <signal.h>
 
-#ifndef __CYGWIN__
+#if !defined( __CYGWIN__ ) && !defined(_WIN32)
 #include <execinfo.h>
 
 #include <fcntl.h>
@@ -60,6 +60,7 @@ void NullHandler( int ) {
 }
 
 void SetupCrashdump() {
+#ifndef _WIN32
 	static struct sigaction action;
 	memset(&action, 0, sizeof( action ) );
 	action.sa_handler = BailTrace;
@@ -70,6 +71,7 @@ void SetupCrashdump() {
 	//action.sa_handler = NullHandler;
 	//sigaction(SIGPIPE, &action, 0 );
 	signal(SIGPIPE, SIG_IGN);
+#endif
 }
 
 #include <sys/types.h>
@@ -107,7 +109,10 @@ uint32_t GoodRandom() {
 	return goodrand;
 }
 
+#ifndef _WIN32
 #include <unistd.h>
+#endif
+
 void stripcolours( char *str ) {
 	const char *in = str;
 	char *out = str;
@@ -129,9 +134,11 @@ void stripcolours( char *str ) {
 }
 
 int is_redirected(){
+#ifndef _WIN32
    if (!isatty(fileno(stdout))){
        return 1;
    }
+#endif
    return 0;
 }
 

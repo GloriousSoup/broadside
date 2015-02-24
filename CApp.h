@@ -7,8 +7,10 @@
 #if _WIN32
 #pragma comment(lib,"SDL2.lib")
 #pragma comment(lib,"OpenGL32.lib")
+# define GL_GLEXT_PROTOTYPES
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_opengl.h"
+#include "render.h"
 #else
 #include "render.h"
 # define GL_GLEXT_PROTOTYPES

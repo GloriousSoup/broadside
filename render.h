@@ -24,13 +24,16 @@
 #include "SDL2/SDL.h"
 #else
 
+#ifdef _WIN32
+#else
 # define GL_GLEXT_PROTOTYPES
 #include "SDL2/SDL.h"
 #include <GL/gl.h>
 #include <GL/glext.h>
+#endif
 
 #if _WIN32
-#include "glhack.h"
+//#include "glhack.h"
 #endif
 
 # include <stdio.h>

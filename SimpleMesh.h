@@ -1,7 +1,7 @@
 #ifndef __SIMPLEMESH_H__
 #define __SIMPLEMESH_H__
 
-#include "render.h"
+#include "CApp.h"
 
 typedef unsigned short INDEX;
 #define INDEX_TYPE GL_UNSIGNED_SHORT
