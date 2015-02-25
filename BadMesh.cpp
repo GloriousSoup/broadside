@@ -214,9 +214,12 @@ bool BadMesh::LoadOBJ( const char *filename, const Mat44 &correction ) {
 						avn -= 1;
 						bvn -= 1;
 						cvn -= 1;
-						PushVNUC( positions[av], normals[avn], uvs[avt] );
-						PushVNUC( positions[bv], normals[bvn], uvs[bvt] );
-						PushVNUC( positions[cv], normals[cvn], uvs[cvt] );
+						PushV( positions[av] );
+						PushV( positions[bv] );
+						PushV( positions[cv] );
+						//PushVNUC( positions[av], normals[avn], uvs[avt] );
+						//PushVNUC( positions[bv], normals[bvn], uvs[bvt] );
+						//PushVNUC( positions[cv], normals[cvn], uvs[cvt] );
 					}
 				}
 			}

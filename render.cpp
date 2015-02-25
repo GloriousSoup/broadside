@@ -404,7 +404,7 @@ void MakeGLTexture( TextureAsset *a ) {
 	}
 }
 bool TextureExists(const char* name) {
-	return gTextures.count(name);
+	return gTextures.count(name) > 0;
 }
 GLuint GLReadTexture(const char* pFilename)
 {
@@ -551,7 +551,7 @@ void GLUpdateLight(float )
 {
 	float fStage = 0.5f;
 	// fTime 0 means mid-day
-	float fTheta = fStage * 2 * M_PI;
+	float fTheta = (float)(fStage * 2 * M_PI);
 	float fS = sinf(fTheta), fC = cosf(fTheta);
 	wsLightDir.x = fC; wsLightDir.y = fS + 0.3f;
 	fStage *= 8;
@@ -575,8 +575,8 @@ void DrawTree(float x, float y, float z, float orientation, float scale, int tre
 	float scaleY = scale;
 	switch (treeType)
     {
-        case 0: orientation += M_PI*2*f; scaleY *= fBounce * f; scale *= f; break;
-        case 1: orientation += M_PI*2*f; scaleY *= fBounce * f; scale *= f; break;
+        case 0: orientation += (float)M_PI*2*f; scaleY *= fBounce * f; scale *= f; break;
+        case 1: orientation += (float)M_PI*2*f; scaleY *= fBounce * f; scale *= f; break;
     }
 	if (pList == NULL) return;
 	if (nFrame < 0 || nFrame >= pList->m_nMeshCount) return;

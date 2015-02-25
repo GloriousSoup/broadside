@@ -2,7 +2,7 @@
 #define RED "\033[0;31m"
 #define GREEN "\033[0;32m"
 #define BLUE "\033[0;34m"
-#define WHITEONBLACK "\033[0;37;40m"
+//#define WHITEONBLACK "\033[0;37;40m"
 #define GREENONBLACK "\033[1;32;40m"
 #define YELLOWONBLACK "\033[1;33;40m"
 #define REDONBLACK "\033[1;31;40m"

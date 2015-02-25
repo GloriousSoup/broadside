@@ -69,6 +69,18 @@ bool CApp::OnInit() {
 		return false;
 	}
 
+#ifdef _WIN32
+	GLenum err = glewInit();
+	if (GLEW_OK != err) {
+		printf("Glew can't run\n");
+		exit(1);
+	}
+	//if (!glewIsSupported("glCreateProgram")) {
+		//printf("Aaargh\n");
+		//exit(1);
+	//}
+#endif
+
 	RenderInit();
 
 	gShipShader.SetSources( "data/ship.vert", "data/ship.frag" );

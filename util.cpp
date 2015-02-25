@@ -2,14 +2,15 @@
 
 #include <signal.h>
 
+int loggingLevel = 3;
+bool gQuit = false;
+
 #if !defined( __CYGWIN__ ) && !defined(_WIN32)
 #include <execinfo.h>
 
 #include <fcntl.h>
 
 bool verbose = true;
-int loggingLevel = 3;
-bool gQuit = false;
 
 void PrintTrace() {
 	const int tracedepth = 64;
@@ -96,7 +97,7 @@ time_t get_ctime(const char *path, time_t def )
 }
 
 uint32_t GoodRandom() {
-	uint32_t goodrand = time(0);
+	uint32_t goodrand = (uint32_t)time(0);
 	if( FILE *fp = fopen( "/dev/urandom", "rb" ) ) {
 		int bytes = fread( &goodrand, sizeof( goodrand ), 1, fp );
 		if( bytes != 1 ) {
