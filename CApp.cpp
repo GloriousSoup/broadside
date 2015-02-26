@@ -4,7 +4,7 @@ GLShader gShipShader;
 
 float x,y,z;
 #include "BadMesh.h" 
-BadMesh * ship;
+BadMesh * ship[ST_NUM_ST];
 
 CApp::CApp() {
 	window = 0;
@@ -88,8 +88,16 @@ bool CApp::OnInit() {
 	RenderInit();
 
 	gShipShader.SetSources( "data/ship.vert", "data/ship.frag" );
-	ship = new BadMesh();
-	ship->Load( "data/pirate-ship.obj" );
+	const char *meshnames[] = {
+		"data/pirate-ship.obj",
+		"data/pirate-ship-large.obj",
+		"data/pirate-ship-fat.obj",
+		"data/pirate-ship-giant.obj"
+	};
+	for( int i = 0; i < ST_NUM_ST; ++i ) {
+		ship[i] = new BadMesh();
+		ship[i]->Load( meshnames[i] );
+	}
 
 	glClearColor(0, 0, 0, 0);
 
@@ -180,13 +188,7 @@ void CApp::Set3D() {
 }
 void CApp::DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation ) {
 	GLSetModel( pos, orientation );
-	switch( type ) {
-		case ST_BASE: ship->DrawTriangles(); break;
-		case ST_LARGE: ship->DrawTriangles(); break;
-		case ST_HUGE: ship->DrawTriangles(); break;
-		case ST_FAT: ship->DrawTriangles(); break;
-		default: break;
-	}
+	ship[type]->DrawTriangles();
 }
 
 void CApp::OnRender() {

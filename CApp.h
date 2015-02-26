@@ -26,7 +26,7 @@ enum SHIP_TYPE {
   ST_BASE,
   ST_LARGE,
   ST_FAT,
-  ST_HUGE,
+  ST_GIANT,
   ST_NUM_ST
 };
 
