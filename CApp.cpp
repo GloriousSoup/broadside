@@ -69,6 +69,8 @@ bool CApp::OnInit() {
 		return false;
 	}
 
+	SDL_GL_SetSwapInterval(1);
+
 #ifdef _WIN32
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
