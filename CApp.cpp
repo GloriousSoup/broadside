@@ -146,7 +146,7 @@ int win_height;
 void CApp::OnLoop() {
 	float speed = 0.1f;
 	x += speed * (kRight - kLeft);
-	y += speed * (kDown - kUp);
+	y += speed * (kUp - kDown);
 	z += speed * (kForward - kBack);
 	gShipShader.ReloadIfNecessary();
 	SDL_GetWindowSize( window, &win_width, &win_height );
@@ -158,8 +158,52 @@ void CApp::OnCleanup() {
 	//SDL_FreeContext(context);
 	SDL_Quit();
 }
+void CApp::Set2D() {
+	DefaultShader.Use();
+	GLSetOrtho(0.0f, win_width, 0.0f, win_height, -1.0f, 1.0f );
+	GLSetCamera( gIdentityMat );
+	GLSetModel( gIdentityMat );
+}
+void CApp::DrawRect( int x, int y, int w, int h, const Vec4 &colour ) {
+	glBegin(GL_QUADS);
+	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x, y, 0);
+	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x+w, y, 0);
+	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x+w, y+h, 0);
+	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x, y+h, 0);
+	glEnd();
+}
+
+void CApp::Set3D() {
+	gShipShader.Use();
+	GLSetPerspective( M_PI / 4.0f, 1.0f, 1000.0f );
+	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
+}
+void CApp::DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation ) {
+	GLSetModel( pos, orientation );
+	switch( type ) {
+		case ST_BASE: ship->DrawTriangles(); break;
+		case ST_LARGE: ship->DrawTriangles(); break;
+		case ST_HUGE: ship->DrawTriangles(); break;
+		case ST_FAT: ship->DrawTriangles(); break;
+		default: break;
+	}
+}
 
 void CApp::OnRender() {
+#if 1
+	glClearColor( 0.1f,0.2f,0.3f, 1.0f );
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	Set2D();
+	DrawRect( x + 40.0f, y + 40.f, 100, 100, Vec4( 0.5f,0.5f,0.5f,1.0f) );
+	DrawRect( 240.0f, 240.f, x+100, y+100, Vec4( 1.0f,1.0f,0.1f,1.0f) );
+
+	Set3D();
+	DrawShip( gZeroVec3, ST_BASE, z );
+
+	DrawShip( Vec3( -x, 0.0f, y ), ST_FAT, 0.0f );
+
+#else
 	glClearColor( 0.4f,0.4f,0.5f, 1.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
@@ -194,6 +238,7 @@ void CApp::OnRender() {
 	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
 	GLSetModel( Vec3( x, y, z ), 0.0f );
 	ship->DrawTriangles();
+#endif
 
 	SDL_GL_SwapWindow(window);
 }

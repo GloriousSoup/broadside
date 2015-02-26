@@ -21,6 +21,15 @@
 #include <GL/glu.h>
 #endif
 
+#include "geom.h"
+enum SHIP_TYPE {
+  ST_BASE,
+  ST_LARGE,
+  ST_FAT,
+  ST_HUGE,
+  ST_NUM_ST
+};
+
 //==============================================================================
 class CApp {
     private:
@@ -40,6 +49,13 @@ class CApp {
         void OnLoop();
         void OnRender();
         void OnCleanup();
+
+  public:
+    void Set2D();
+    void DrawRect( int x, int y, int w, int h, const Vec4 &colour );
+
+    void Set3D();
+    void DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation );
 };
 
 //==============================================================================
