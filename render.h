@@ -117,6 +117,12 @@ void ReloadShader(GLShader &ShaderProgram, const char *vshad, const char *fshad 
 #include "geom.h"
 void GLLoadTransform(float x, float y, float z, float sx, float sy, float sz, float orientation);
 void GLLoadTransform(float x, float y, float z, float scale, float orientation);
+void GLSetOrtho(float left, float right, float top, float bottom, float back, float front);
+void GLSetPerspective(float fov, float near, float far );
+void GLSetCamera(const Mat44 &m);
+void GLSetCamera(const Vec3 &pos, const Vec3 &target);
+void GLSetModel(const Mat44 &m);
+void GLSetModel(const Vec3 &pos, float orientation);
 
 #define GL_PREMULTIPLIED_ALPHA 0
 #define GL_INVERT_Y 1

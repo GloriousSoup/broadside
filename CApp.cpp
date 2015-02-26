@@ -59,7 +59,11 @@ bool CApp::OnInit() {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-	window = SDL_CreateWindow("thing", 10, 10, 640, 480, SDL_WINDOW_OPENGL );
+	int S = 800/16;
+	int ww = 16*S;
+	int hh = 9*S;
+
+	window = SDL_CreateWindow("thing", 10, 10, ww, hh, SDL_WINDOW_OPENGL );
 
 	if(window == NULL) {
 		return false;
@@ -68,8 +72,6 @@ bool CApp::OnInit() {
 	if( context == NULL ) {
 		return false;
 	}
-
-	SDL_GL_SetSwapInterval(1);
 
 #ifdef _WIN32
 	GLenum err = glewInit();
@@ -91,12 +93,12 @@ bool CApp::OnInit() {
 
 	glClearColor(0, 0, 0, 0);
 
-	glViewport(0, 0, 640, 480);
+	glViewport(0, 0, ww, hh);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glOrtho(0, 640, 480, 0, 1, -1);
+	glOrtho(0, ww, hh, 0, 1, -1);
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -142,7 +144,7 @@ int win_width;
 int win_height;
 
 void CApp::OnLoop() {
-	float speed = 0.01f;
+	float speed = 0.1f;
 	x += speed * (kRight - kLeft);
 	y += speed * (kDown - kUp);
 	z += speed * (kForward - kBack);
@@ -175,6 +177,9 @@ void CApp::OnRender() {
 	gShipShader.Use();
 	static int a = 0;
 	a += 1;
+	GLSetOrtho(0.0f, win_width, 0.0f, win_height, -1.0f, 1.0f );
+	GLSetCamera( gIdentityMat );
+	GLSetModel( gIdentityMat );
 	if( a & 1 ) {
 		glBegin(GL_QUADS);
 		glColor3f(1, 0, 0); glVertex3f(x+0, y+0, 0);
@@ -183,8 +188,11 @@ void CApp::OnRender() {
 		glColor3f(1, 1, 1); glVertex3f(x+0, y+100, 0);
 		glEnd();
 	}
+
 	
-	GLLoadTransform(x,y,z, 1.0f, 0.0f );
+	GLSetPerspective( M_PI / 4.0f, 1.0f, 1000.0f );
+	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
+	GLSetModel( Vec3( x, y, z ), 0.0f );
 	ship->DrawTriangles();
 
 	SDL_GL_SwapWindow(window);

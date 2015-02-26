@@ -467,6 +467,9 @@ char* Mtx2Str(float* p)
 }
 
 GLfloat m_ProjectionMatrix[16];
+Mat44 m_ProjMatrix;
+Mat44 m_CameraMatrix;
+Mat44 m_ModelMatrix;
 
 void Perspective() {
 	GLPerspective(m_ProjectionMatrix, 2.0f, (float)win_width / (float)win_height, 0.1f, 100.0f);
@@ -524,6 +527,33 @@ void GLLoadTransform(float x, float y, float z, float scale, float orientation )
 {
 	GLLoadTransform(x,y,z, scale,scale,scale, orientation );
 }
+void GLSetOrtho(float left, float right, float top, float bottom, float back, float front) {
+	m_ProjMatrix = Mat44Orthographic( left, right, bottom, top, front, back );
+	SetUniformMat(projLocation, m_ProjMatrix);
+}
+void GLSetPerspective(float fov, float near, float far ) {
+	float ratio = (float)win_width / (float)win_height;
+	m_ProjMatrix = Mat44Perspective( fov, ratio, near, far );
+	SetUniformMat(projLocation, m_ProjMatrix);
+}
+void GLSetCamera(const Mat44 &m) {
+	m_CameraMatrix = m;
+}
+void GLSetCamera(const Vec3 &pos, const Vec3 &target) {
+	GLSetCamera( Mat44LookAt( pos, target, gYVec3 ) );
+}
+void GLSetModel(const Mat44 &m) {
+	m_ModelMatrix = m;
+	Mat44 mv = m_ModelMatrix * m_CameraMatrix;
+	SetUniformMat(mvLocation, mv );
+}
+void GLSetModel(const Vec3 &pos, float orientation) {
+	Mat44 m;
+	m.RotY( orientation );
+	m.w = pos;
+	GLSetModel( m );
+}
+
 Vec3 wsLightDir(0.5f, 1.0f, -0.5f);
 Vec3 g_lightColour(1,1,1);
 Vec3 g_ambientColour(0,0,0);
