@@ -103,16 +103,16 @@ bool CApp::OnInit() {
 
 	glViewport(0, 0, ww, hh);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
 
-	glOrtho(0, ww, hh, 0, 1, -1);
+	//glOrtho(0, ww, hh, 0, 1, -1);
 
-	glMatrixMode(GL_MODELVIEW);
+	//glMatrixMode(GL_MODELVIEW);
 
 	glEnable(GL_TEXTURE_2D);
 
-	glLoadIdentity();
+	//glLoadIdentity();
 
 	return true;
 }
@@ -173,12 +173,37 @@ void CApp::Set2D() {
 	GLSetModel( gIdentityMat );
 }
 void CApp::DrawRect( int x, int y, int w, int h, const Vec4 &colour ) {
+#if 1
+	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(ATTR_VERTEX);
+	glEnableVertexAttribArray(ATTR_COLOR);
+
+	float pPos[] = {
+		(float)x,(float)y,0.0f,
+		(float)x+w,(float)y,0.0f,
+		(float)x+w,(float)y+h,0.0f,
+		(float)x,(float)y+h,0.0f
+	};
+	float pCol[] = {
+		colour.x,colour.y,colour.z,
+		colour.x,colour.y,colour.z,
+		colour.x,colour.y,colour.z,
+		colour.x,colour.y,colour.z,
+	};
+	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pPos);
+	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pCol);
+
+	unsigned short pInds[] = { 0,1,2, 0,2,3 };
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, pInds);
+#else
 	glBegin(GL_QUADS);
 	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x, y, 0);
 	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x+w, y, 0);
 	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x+w, y+h, 0);
 	glColor3f(colour.x, colour.y, colour.z); glVertex3f(x, y+h, 0);
 	glEnd();
+#endif
 }
 
 void CApp::Set3D() {

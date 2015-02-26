@@ -1,19 +1,22 @@
 TARGETS=broadside
 
-CC=g++
+#CC=g++
+CC=local/bin/arm-linux-androideabi-g++
 #CC=clang++
 #OPTIMISE=-O2
 OPTIMISE=-O0
 DEBUG=-ggdb3
 CFLAGS= -fno-strict-aliasing -DUNIV_LINUX \
 	-Werror -Wall -Wextra $(OPTIMISE) $(DEBUG) \
-	-I "/usr/local/include"
+	-I "/usr/local/include" \
+	-DANDROID
 CFLAGSNOWARN= -fno-strict-aliasing -DUNIV_LINUX \
 	$(OPTIMISE) $(DEBUG) \
 	-I "/usr/local/include"
 LIBS=-Wl,-Bsymbolic-functions \
 	-rdynamic -lrt -lpthread \
 	-lGL -lSDL2main -lSDL2 \
+	-lGLESv2 \
 	-L "/usr/local/lib"
 
 RAW_COMMONOBJECTS=CApp.o glhack.o render.o SimpleMesh.o util.o assetloader.o stbi_image.o BadMesh.o geom.o

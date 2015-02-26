@@ -5,7 +5,7 @@
 int loggingLevel = 3;
 bool gQuit = false;
 
-#if !defined( __CYGWIN__ ) && !defined(_WIN32)
+#if !defined( __CYGWIN__ ) && !defined(_WIN32) && !defined(ANDROID)
 #include <execinfo.h>
 
 #include <fcntl.h>

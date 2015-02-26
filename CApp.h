@@ -17,8 +17,12 @@
 #include "render.h"
 # define GL_GLEXT_PROTOTYPES
 #include <SDL2/SDL.h>
+#ifdef ANDROID
+#include "GLES2/gl2.h"
+#else
 #include <GL/gl.h>
-#include <GL/glu.h>
+#include <GL/glext.h>
+#endif
 #endif
 
 #include "geom.h"

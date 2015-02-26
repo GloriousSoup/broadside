@@ -378,7 +378,7 @@ void MakeGLTexture( TextureAsset *a ) {
 			printf( "glBindTexture (%i,%x)\n", error, error );
 		}
 		int nGLFmt = GL_RGBA;
-#ifdef _GLES
+#ifdef ANDROID
 #else
 		glShadeModel( GL_SMOOTH );
 		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
@@ -878,7 +878,7 @@ GLuint GLMemoryTexture(S32 nW, S32 nH, U32* pnImage, S32 bCreateMipChain, S32 nF
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, bCreateMipChain ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, bCreateMipChain ? GL_TRUE : GL_FALSE);
+	//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, bCreateMipChain ? GL_TRUE : GL_FALSE);
 #ifdef _GLES
 	if (glGetError()) bUseGenerateMipmap = 1;
 #endif
