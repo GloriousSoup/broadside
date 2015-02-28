@@ -10,6 +10,7 @@ CApp::CApp() {
 	window = 0;
 	context = 0;
 	Running = true;
+	m_PointerDown = false;
 }
 
 int CApp::OnExecute() {
@@ -176,15 +177,19 @@ void CApp::OnLoop() {
 	gShipShader.ReloadIfNecessary();
 	SDL_GetWindowSize( window, &win_width, &win_height );
 
-	Rect r(200,300,30,80);
-	Style s;
-	std::string text = "test string";
-	if( IMButton( r, text, s ) ) {
-		x += 1.0f;
-		printf( "Button hit");
+	{
+		Rect r(200,300,30,80);
+		Rect r2(310,410,30,80);
+		Style s;
+		TXT text = "LEFT";
+		TXT text2 = "RIGHT";
+		if( IMButton( r, text, s ) ) {
+			x -= speed;
+		}
+		if( IMButton( r2, text2, s ) ) {
+			x += speed;
+		}
 	}
-
-	m_PointerDown = false;
 }
 
 void CApp::OnCleanup() {

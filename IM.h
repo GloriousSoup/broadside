@@ -1,7 +1,7 @@
 #ifndef _IM_H_
 #define _IM_H_
 
-#include <string>
+#include "broadside.h"
 
 struct Rect { // for pixel space positioning
 	int left, right; // 0 is left
@@ -34,9 +34,9 @@ struct Style {
 
 struct ButtonRenderData {
 	Rect r;
-	std::string text;
+	TXT text;
 	Style s;
-	ButtonRenderData( const Rect &_r, const std::string &_text, const Style &_s ) : r(_r), text(_text), s(_s) {}
+	ButtonRenderData( const Rect &_r, const TXT &_text, const Style &_s ) : r(_r), text(_text), s(_s) {}
 };
 
 #endif

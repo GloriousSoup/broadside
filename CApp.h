@@ -30,8 +30,8 @@ enum SHIP_TYPE {
   ST_NUM_ST
 };
 
+#include "broadside.h"
 #include "IM.h"
-#include <vector>
 
 //==============================================================================
 class CApp {
@@ -59,7 +59,7 @@ class CApp {
     public:
         typedef std::vector<ButtonRenderData> ButtonVec;
         ButtonVec ButtonsToRender;
-        bool IMButton( const Rect &r, const std::string &text, const Style &style );
+        bool IMButton( const Rect &r, const TXT &text, const Style &style );
 
   public:
     void Set2D();
