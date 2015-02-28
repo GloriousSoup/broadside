@@ -1,6 +1,7 @@
 #include "render.h"
 #include "util.h"
 #include "geom.h"
+#include "FontRender.h"
 
 #ifndef _WIN32
 #include "unistd.h"
@@ -226,9 +227,16 @@ extern int win_height;
 extern bool gUseShaders;
 
 GLShader DefaultShaderProgram;
+void GLMakeSmallWhite();
 void RenderInit() {
 	PrepareShaderPrefixes();
-	LoadShader( DefaultShader, "data/default.vert", "data/default.frag" );
+	DefaultShader.SetSources( "data/default.vert", "data/default.frag" );
+	GLMakeSmallWhite();
+	FontRenderInit();
+}
+void RenderUpdate() {
+	DefaultShader.ReloadIfNecessary();
+	FontUpdate();
 }
 
 extern GLuint textureLocation;
@@ -426,6 +434,27 @@ GLuint GLReadTexture(const char* pFilename)
 	return pAss->glTextureID;
 }
 
+void SetTexture(GLuint textureID, int slotID) {
+	if( UniformExists(textureLocation) ) {
+		if (textureID == 0xFFFFFFFF ) {
+			extern GLuint g_nSmallWhiteTexture;
+			textureID = g_nSmallWhiteTexture;
+		}
+		glActiveTexture(GL_TEXTURE0 + slotID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		SetUniform1i(textureLocation, slotID);
+	}
+}
+
+void SetTexture(const char* pName, int slotID) {
+	if( gTextures.count( pName ) ) {
+		GLuint tid = gTextures[pName]->glTextureID;
+		SetTexture(tid, slotID);
+	} else {
+		extern GLuint g_nSmallWhiteTexture;
+		SetTexture(g_nSmallWhiteTexture, slotID);
+	}
+}
 void GLActivateTexture(GLuint textureID, int nId);
 
 void GLActivateTextureForLocation(GLuint textureID, int nSlot, int nLocation)
@@ -541,6 +570,9 @@ void GLSetCamera(const Mat44 &m) {
 }
 void GLSetCamera(const Vec3 &pos, const Vec3 &target) {
 	GLSetCamera( Mat44LookAt( pos, target, gYVec3 ) );
+}
+void GLUploadPV() {
+	SetUniformMat(projLocation, m_ProjMatrix);
 }
 void GLSetModel(const Mat44 &m) {
 	m_ModelMatrix = m;

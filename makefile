@@ -16,7 +16,10 @@ LIBS=-Wl,-Bsymbolic-functions \
 	-lGL -lSDL2main -lSDL2 \
 	-L "/usr/local/lib"
 
-RAW_COMMONOBJECTS=CApp.o glhack.o render.o SimpleMesh.o util.o assetloader.o stbi_image.o BadMesh.o geom.o
+RAW_COMMONOBJECTS=CApp.o render.o \
+	SimpleMesh.o util.o assetloader.o stbi_image.o \
+	BadMesh.o geom.o FontRender.o
+
 RAW_TARGETOBJECTS=$(TARGETS:%=%.o)
 COMMONOBJECTS=$(RAW_COMMONOBJECTS:%=build/%)
 TARGETOBJECTS=$(RAW_TARGETOBJECTS:%=build/%)

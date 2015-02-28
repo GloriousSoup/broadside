@@ -6,6 +6,8 @@ float x,y,z;
 #include "BadMesh.h" 
 BadMesh * ship[ST_NUM_ST];
 
+#include "FontRender.h"
+
 CApp::CApp() {
 	window = 0;
 	context = 0;
@@ -170,6 +172,8 @@ int win_width;
 int win_height;
 
 void CApp::OnLoop() {
+	RenderUpdate();
+
 	float speed = 0.1f;
 	x += speed * (kRight - kLeft);
 	y += speed * (kUp - kDown);
@@ -181,8 +185,9 @@ void CApp::OnLoop() {
 		Rect r(200,300,30,80);
 		Rect r2(310,410,30,80);
 		Style s;
-		TXT text = "LEFT";
-		TXT text2 = "RIGHT";
+		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+		TXT text = "GO LEFT NOW";
+		TXT text2 = "GO RIGHT SOON";
 		if( IMButton( r, text, s ) ) {
 			x -= speed;
 		}
@@ -205,6 +210,7 @@ void CApp::Set2D() {
 	GLSetModel( gIdentityMat );
 }
 void CApp::DrawRect( int x, int y, int w, int h, const Vec4 &colour ) {
+	DefaultShader.Use();
 	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(ATTR_VERTEX);
@@ -250,6 +256,12 @@ void CApp::OnRender() {
 		Vec4 c = Vec4(1.0f);
 		if( i->s.BGColour ) c = i->s.BGColour;
 		DrawRect( r.left, r.top, r.right - r.left, r.bottom - r.top, c );
+		Mat44 m = gIdentityMat;
+		m.w.x = r.left;
+		m.w.y = r.top;
+
+		FontPrint( m, i->text.c_str() );
+		GLSetModel(gIdentityMat);
 	}
 
 	Set3D();
