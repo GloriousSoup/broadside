@@ -205,7 +205,7 @@ void CApp::OnCleanup() {
 }
 void CApp::Set2D() {
 	DefaultShader.Use();
-	GLSetOrtho(0.0f, win_width, 0.0f, win_height, -1.0f, 1.0f );
+	GLSetOrtho(0.0f, (float)win_width, 0.0f, (float)win_height, -1.0f, 1.0f );
 	GLSetCamera( gIdentityMat );
 	GLSetModel( gIdentityMat );
 }
@@ -237,7 +237,7 @@ void CApp::DrawRect( int x, int y, int w, int h, const Vec4 &colour ) {
 
 void CApp::Set3D() {
 	gShipShader.Use();
-	GLSetPerspective( M_PI / 4.0f, 1.0f, 1000.0f );
+	GLSetPerspective( (float)M_PI / 4.0f, 1.0f, 1000.0f );
 	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
 }
 void CApp::DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation ) {
@@ -257,8 +257,8 @@ void CApp::OnRender() {
 		if( i->s.BGColour ) c = i->s.BGColour;
 		DrawRect( r.left, r.top, r.right - r.left, r.bottom - r.top, c );
 		Mat44 m = gIdentityMat;
-		m.w.x = r.left;
-		m.w.y = r.top;
+		m.w.x = (float)r.left;
+		m.w.y = (float)r.top;
 
 		FontPrint( m, i->text.c_str() );
 		GLSetModel(gIdentityMat);

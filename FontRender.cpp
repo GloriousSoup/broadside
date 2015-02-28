@@ -56,10 +56,10 @@ void FontRenderInit() {
 	int xpos[] = { 0,1,0, 0,1,1 };
 	int ypos[] = { 0,0,1, 1,0,1 };
 	for(int i = 0; i < 6; ++i ) {
-		Vec3 v = Vec3(8*xpos[i],8*ypos[i],0);
-		Vec3 n = Vec3(0,0,1);
+		Vec3 v = Vec3(8.0f*xpos[i],8.0f*ypos[i],0);
+		Vec3 n = Vec3(0,0,1.0f);
 		Colour c( 0xFFFFFFFF );
-		Vec2 u = Vec2(xpos[i],ypos[i]);
+		Vec2 u = Vec2((float)xpos[i],(float)ypos[i]);
 		gGlyphMesh.PushVNUC( v, n, u, c.val );
 	}
 

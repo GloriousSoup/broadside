@@ -7,15 +7,15 @@
 struct IVec2 {
 	int x,y;
 	IVec2( int _v ) : x(_v), y(_v) {}
-	IVec2( int _x, float _y) : x(_x), y(_y) {}
+	IVec2( int _x, int _y) : x(_x), y(_y) {}
 	IVec2() {x = 0; y = 0;}
 	IVec2 operator+(const IVec2 &other) const { return IVec2(x+other.x, y+other.y); }
 	IVec2 operator-(const IVec2 &other) const { return IVec2(x-other.x, y-other.y); }
-	IVec2 operator*(float other) const { return IVec2(x*other, y*other); }
-	IVec2 operator/(float other) const { return IVec2(x/other, y/other); }
+	IVec2 operator*(float other) const { return IVec2((int)(x*other), (int)(y*other)); }
+	IVec2 operator/(float other) const { return IVec2((int)(x/other), (int)(y/other)); }
 	IVec2& operator+=(const IVec2 &other) { x+=other.x; y+=other.y; return *this; }
 	IVec2& operator-=(const IVec2 &other) { x-=other.x; y-=other.y; return *this; }
-	IVec2& operator*=(float other) { *this = IVec2(x*other, y*other); return *this; }
+	IVec2& operator*=(float other) { *this = IVec2((int)(x*other), (int)(y*other)); return *this; }
 	IVec2 operator-() const { return IVec2(-x, -y); }
 };
 

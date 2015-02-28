@@ -2,7 +2,12 @@
 #define _util_h_
 
 #define __STDC_FORMAT_MACROS
+
+#if _WIN32
+typedef unsigned int uint32_t;
+#else
 #include <inttypes.h>
+#endif
 
 #include <stdio.h>
 #include <stdarg.h>
