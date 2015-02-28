@@ -92,7 +92,7 @@ inline int Log( int level, const char *format, ... ) {
 	time_t clock = time(NULL);
 	tm *cal = gmtime( &clock );
 	char buffer[ 64 ];
-	strftime( buffer, 64, "%F %T", cal );
+	strftime( buffer, 64, "%Y-%m-%d %H:%M:%S", cal );
 	fprintf( stdout, "[%s]", buffer );
 	char fbuf[1024];
 	if( is_redirected() ) { strcpy( fbuf, format ); format = fbuf; stripcolours( fbuf ); }

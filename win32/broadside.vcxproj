@@ -80,6 +80,7 @@
     <ClCompile Include="..\BadMesh.cpp" />
     <ClCompile Include="..\broadside.cpp" />
     <ClCompile Include="..\CApp.cpp" />
+    <ClCompile Include="..\FontRender.cpp" />
     <ClCompile Include="..\geom.cpp" />
     <ClCompile Include="..\render.cpp" />
     <ClCompile Include="..\SimpleMesh.cpp" />
@@ -87,10 +88,14 @@
     <ClCompile Include="..\util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\8x8font.h" />
     <ClInclude Include="..\assetloader.h" />
     <ClInclude Include="..\BadMesh.h" />
+    <ClInclude Include="..\broadside.h" />
     <ClInclude Include="..\CApp.h" />
+    <ClInclude Include="..\FontRender.h" />
     <ClInclude Include="..\geom.h" />
+    <ClInclude Include="..\IM.h" />
     <ClInclude Include="..\render.h" />
     <ClInclude Include="..\SimpleMesh.h" />
     <ClInclude Include="..\stbi_image.h" />
