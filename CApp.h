@@ -30,6 +30,9 @@ enum SHIP_TYPE {
   ST_NUM_ST
 };
 
+#include "IM.h"
+#include <vector>
+
 //==============================================================================
 class CApp {
     private:
@@ -37,6 +40,9 @@ class CApp {
 
         SDL_Window * window;
         SDL_GLContext context;
+
+		  bool m_PointerDown;
+		  IVec2 m_PointerPos;
 
     public:
         CApp();
@@ -49,6 +55,11 @@ class CApp {
         void OnLoop();
         void OnRender();
         void OnCleanup();
+
+    public:
+        typedef std::vector<ButtonRenderData> ButtonVec;
+        ButtonVec ButtonsToRender;
+        bool IMButton( const Rect &r, const std::string &text, const Style &style );
 
   public:
     void Set2D();

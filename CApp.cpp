@@ -145,6 +145,23 @@ void CApp::OnEvent(SDL_Event* Event) {
 			}
 		}
 		break;
+		case SDL_MOUSEBUTTONDOWN: {
+			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
+			m_PointerDown = true;
+			//printf( "Mouse button pressed (%i,%i)\n", m_PointerPos.x, m_PointerPos.y );
+		}
+		break;
+		case SDL_MOUSEBUTTONUP: {
+			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
+			m_PointerDown = false;
+			//printf( "Mouse button released (%i,%i)\n", m_PointerPos.x, m_PointerPos.y );
+		}
+		break;
+		case SDL_MOUSEMOTION: {
+			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
+			//printf( "Mouse moved (%i,%i)\n", m_PointerPos.x, m_PointerPos.y );
+		}
+		break;
 	}
 }
 
@@ -158,6 +175,16 @@ void CApp::OnLoop() {
 	z += speed * (kForward - kBack);
 	gShipShader.ReloadIfNecessary();
 	SDL_GetWindowSize( window, &win_width, &win_height );
+
+	Rect r(200,300,30,80);
+	Style s;
+	std::string text = "test string";
+	if( IMButton( r, text, s ) ) {
+		x += 1.0f;
+		printf( "Button hit");
+	}
+
+	m_PointerDown = false;
 }
 
 void CApp::OnCleanup() {
@@ -213,8 +240,12 @@ void CApp::OnRender() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Set2D();
-	DrawRect( x + 40.0f, y + 40.f, 100, 100, Vec4( 0.5f,0.5f,0.5f,1.0f) );
-	DrawRect( 240.0f, 240.f, x+100, y+100, Vec4( 1.0f,1.0f,0.1f,1.0f) );
+	for( ButtonVec::iterator i = ButtonsToRender.begin(); i != ButtonsToRender.end(); ++i ) {
+		Rect r = i->r;
+		Vec4 c = Vec4(1.0f);
+		if( i->s.BGColour ) c = i->s.BGColour;
+		DrawRect( r.left, r.top, r.right - r.left, r.bottom - r.top, c );
+	}
 
 	Set3D();
 	DrawShip( gZeroVec3, ST_BASE, z );
@@ -259,4 +290,15 @@ void CApp::OnRender() {
 #endif
 
 	SDL_GL_SwapWindow(window);
+}
+
+//std::vector<ButtonRenderData> ButtonsToRender;
+bool CApp::IMButton( const Rect &r, const std::string &text, const Style &style ) {
+	ButtonsToRender.push_back( ButtonRenderData( r, text, style ) );
+
+	bool activated = false;
+	if( m_PointerDown ) {
+		activated = r.Overlaps( m_PointerPos );
+	}
+	return activated;
 }
