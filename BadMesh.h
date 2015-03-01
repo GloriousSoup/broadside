@@ -17,6 +17,7 @@ struct BadMesh {
 	void UVsFromBB();
 	void UVsFromBB( const Vec3 &uaxis, const Vec3 &vaxis );
 	void ApplyTransform( const Mat44 &t );
+	void SetColour( const Vec4 &colour );
 
 	void DrawTriangles();
 	void Clear();

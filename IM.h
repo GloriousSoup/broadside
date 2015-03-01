@@ -2,6 +2,16 @@
 #define _IM_H_
 
 #include "broadside.h"
+#include "optional.h"
+
+enum UI_STATE {
+	UI_NOHIT,
+	UI_HOVER,
+	UI_START,
+	UI_END,
+
+	UI_UNKNOWN
+};
 
 struct Rect { // for pixel space positioning
 	int left, right; // 0 is left
@@ -16,16 +26,6 @@ struct Rect { // for pixel space positioning
 	Rect( int l, int r, int t, int b ) : left(l), right(r), top(t), bottom(b) {}
 };
 
-template <typename T>
-struct Optional {
-	T val;
-	bool valid;
-	operator T () const { return val; }
-	operator bool () const { return valid; }
-	Optional() : valid( false ) {}
-	Optional( T v ) : val( v ), valid( true ) {}
-	Optional( const Optional &v ) : val( v.val ), valid( v.valid ) {}
-};
 struct Style {
 	Optional<Vec4> BGColour;
 	Optional<Vec4> TextColour;

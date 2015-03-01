@@ -7,6 +7,5 @@
 
 typedef std::string TXT;
 
-
 #endif
 

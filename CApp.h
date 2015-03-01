@@ -42,7 +42,11 @@ class CApp {
         SDL_GLContext context;
 
 		  bool m_PointerDown;
+		  bool m_PointerUp;
 		  IVec2 m_PointerPos;
+		  IVec2 m_PointerMove;
+
+		  int ui_active;
 
     public:
         CApp();
@@ -59,7 +63,7 @@ class CApp {
     public:
         typedef std::vector<ButtonRenderData> ButtonVec;
         ButtonVec ButtonsToRender;
-        bool IMButton( const Rect &r, const TXT &text, const Style &style );
+        UI_STATE IMButton( const Rect &r, const TXT &text, const Style &style );
 
   public:
     void Set2D();

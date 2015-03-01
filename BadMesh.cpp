@@ -275,6 +275,12 @@ void BadMesh::ApplyTransform( const Mat44 &t ) {
 		current = t * current;
 	}
 }
+void BadMesh::SetColour( const Vec4 &colour ) {
+	int count = colours.size();
+	for( int v = 0; v < count; ++v ) {
+		colours[v] = Colour( colour.x, colour.y, colour.z, colour.w );
+	}
+}
 void BadMesh::UVsFromBB( const Vec3 &uaxis, const Vec3 &vaxis ) {
 	Vec3 low, high;
 	low = vertices[0];

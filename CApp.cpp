@@ -13,6 +13,8 @@ CApp::CApp() {
 	context = 0;
 	Running = true;
 	m_PointerDown = false;
+	m_PointerUp = false;
+	ui_active = -1;
 }
 
 int CApp::OnExecute() {
@@ -150,19 +152,20 @@ void CApp::OnEvent(SDL_Event* Event) {
 		break;
 		case SDL_MOUSEBUTTONDOWN: {
 			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
+			//printf( "MOUSEBUTTONDOWN %i,%i\n", m_PointerMove.x, m_PointerMove.y );
 			m_PointerDown = true;
-			//printf( "Mouse button pressed (%i,%i)\n", m_PointerPos.x, m_PointerPos.y );
 		}
 		break;
 		case SDL_MOUSEBUTTONUP: {
 			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
-			m_PointerDown = false;
-			//printf( "Mouse button released (%i,%i)\n", m_PointerPos.x, m_PointerPos.y );
+			m_PointerUp = true;
+			//printf( "MOUSEBUTTONUP %i,%i\n", m_PointerMove.x, m_PointerMove.y );
 		}
 		break;
 		case SDL_MOUSEMOTION: {
 			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
-			//printf( "Mouse moved (%i,%i)\n", m_PointerPos.x, m_PointerPos.y );
+			m_PointerMove += IVec2( Event->motion.xrel, Event->motion.yrel );
+			//printf( "MOUSEMOTION %i,%i\n", m_PointerMove.x, m_PointerMove.y );
 		}
 		break;
 	}
@@ -188,13 +191,56 @@ void CApp::OnLoop() {
 		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
 		TXT text = "GO LEFT NOW";
 		TXT text2 = "GO RIGHT SOON";
-		if( IMButton( r, text, s ) ) {
-			x -= speed;
+		UI_STATE uis = IMButton( r, text, s );
+		switch( uis ) {
+			case UI_START: ui_active = 1; break;
+			case UI_END: if( ui_active == 1 ) {
+								 x -= 1.0f;
+								 ui_active = -1;
+							 }
+								break;
+			default: break;
 		}
-		if( IMButton( r2, text2, s ) ) {
-			x += speed;
+		s.TextColour = Vec4( 1.0f, 0.0f, 0.0f, 1.0f );
+		uis = IMButton( r2, text2, s );
+		switch( uis ) {
+			case UI_START: ui_active = 2; break;
+			case UI_END: if( ui_active == 2 ) {
+								 x += 1.0f;
+								 ui_active = -1;
+							 }
+								break;
+			default: break;
+		}
+
+		s.BGColour = Vec4( 0.8f, 0.8f, 0.8f, 1.0f );
+		s.TextColour = Vec4( 0.0f, 0.1f, 0.4f, 1.0f );
+		static Rect r3(100,200,100,200);
+		if( ui_active == 3 ) {
+			r3.left += m_PointerMove.x;
+			r3.right += m_PointerMove.x;
+			r3.top += m_PointerMove.y;
+			r3.bottom += m_PointerMove.y;
+		}
+		uis = IMButton( r3, "Movable", s );
+		switch( uis ) {
+			case UI_START: {
+									//printf( "start drag\n" );
+									ui_active = 3;
+								}
+								break;
+			case UI_END: if( ui_active == 3 ) {
+								 //printf( "end drag\n" );
+								 ui_active = -1;
+							 }
+							 break;
+			default: break;
 		}
 	}
+
+	m_PointerDown = false;
+	m_PointerUp = false;
+	m_PointerMove = IVec2(0,0);
 }
 
 void CApp::OnCleanup() {
@@ -260,9 +306,10 @@ void CApp::OnRender() {
 		m.w.x = (float)r.left;
 		m.w.y = (float)r.top;
 
-		FontPrint( m, i->text.c_str() );
+		FontPrint( m, i->text.c_str(), i->s.TextColour );
 		GLSetModel(gIdentityMat);
 	}
+	ButtonsToRender.clear();
 
 	Set3D();
 	DrawShip( gZeroVec3, ST_BASE, z );
@@ -310,12 +357,16 @@ void CApp::OnRender() {
 }
 
 //std::vector<ButtonRenderData> ButtonsToRender;
-bool CApp::IMButton( const Rect &r, const std::string &text, const Style &style ) {
+UI_STATE CApp::IMButton( const Rect &r, const std::string &text, const Style &style ) {
 	ButtonsToRender.push_back( ButtonRenderData( r, text, style ) );
-
-	bool activated = false;
-	if( m_PointerDown ) {
-		activated = r.Overlaps( m_PointerPos );
+	if( r.Overlaps( m_PointerPos ) ) {
+		if( m_PointerDown ) {
+			return UI_START;
+		}
+		if( m_PointerUp ) {
+			return UI_END;
+		}
+		return UI_HOVER;
 	}
-	return activated;
+	return UI_NOHIT;
 }

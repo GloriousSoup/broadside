@@ -109,12 +109,16 @@ void RenderSimpleQuad( const Mat44 & transform ) {
 	gGlyphMesh.DrawTriangles();
 }
 
-void FontPrint( const Mat44 & basis, const char *string ) {
+void FontPrint( const Mat44 & basis, const char *string, const Optional<Vec4> &colour ) {
 	gFontShader.Use();
 	GLUploadPV();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 	Mat44 transform = basis;
+	if( colour )
+		gGlyphMesh.SetColour( colour );
+	else
+		gGlyphMesh.SetColour( gOneVec3 );
 	while( *string ) {
 		SetFontTexture( *string );
 		RenderSimpleQuad( transform );
