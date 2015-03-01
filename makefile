@@ -1,7 +1,7 @@
 TARGETS=broadside
 
-CC=g++
-#CC=clang++
+#CC=g++
+CC=clang++
 #OPTIMISE=-O2
 OPTIMISE=-O0
 DEBUG=-ggdb3
