@@ -14,7 +14,7 @@ CApp::CApp() {
 	Running = true;
 	m_PointerDown = false;
 	m_PointerUp = false;
-	ui_active = -1;
+	ui.activeID = -1;
 }
 
 int CApp::OnExecute() {
@@ -191,51 +191,22 @@ void CApp::OnLoop() {
 		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
 		TXT text = "GO LEFT NOW";
 		TXT text2 = "GO RIGHT SOON";
-		UI_STATE uis = IMButton( r, text, s );
-		switch( uis ) {
-			case UI_START: ui_active = 1; break;
-			case UI_END: if( ui_active == 1 ) {
-								 x -= 1.0f;
-								 ui_active = -1;
-							 }
-								break;
-			default: break;
+		if( IMButton( 1, r, text, s ) ) {
+			x -= 1.0f;
 		}
 		s.TextColour = Vec4( 1.0f, 0.0f, 0.0f, 1.0f );
-		uis = IMButton( r2, text2, s );
-		switch( uis ) {
-			case UI_START: ui_active = 2; break;
-			case UI_END: if( ui_active == 2 ) {
-								 x += 1.0f;
-								 ui_active = -1;
-							 }
-								break;
-			default: break;
+		if( IMButton( 2, r2, text2, s ) ) {
+			x += 1.0f;
 		}
 
 		s.BGColour = Vec4( 0.8f, 0.8f, 0.8f, 1.0f );
 		s.TextColour = Vec4( 0.0f, 0.1f, 0.4f, 1.0f );
 		static Rect r3(100,200,100,200);
-		if( ui_active == 3 ) {
-			r3.left += m_PointerMove.x;
-			r3.right += m_PointerMove.x;
-			r3.top += m_PointerMove.y;
-			r3.bottom += m_PointerMove.y;
-		}
-		uis = IMButton( r3, "Movable", s );
-		switch( uis ) {
-			case UI_START: {
-									//printf( "start drag\n" );
-									ui_active = 3;
-								}
-								break;
-			case UI_END: if( ui_active == 3 ) {
-								 //printf( "end drag\n" );
-								 ui_active = -1;
-							 }
-							 break;
-			default: break;
-		}
+		IMDraggable( 3, r3, "Movable R3", s );
+		s.BGColour = Vec4( 0.5f, 0.5f, 0.5f, 1.0f );
+		s.TextColour = Vec4( 0.0f, 0.1f, 0.9f, 1.0f );
+		static Rect r4(200,300,100,200);
+		IMDraggable( 4, r4, "Movable R4", s );
 	}
 
 	m_PointerDown = false;
@@ -357,16 +328,38 @@ void CApp::OnRender() {
 }
 
 //std::vector<ButtonRenderData> ButtonsToRender;
-UI_STATE CApp::IMButton( const Rect &r, const std::string &text, const Style &style ) {
+bool CApp::IMButton( int id, const Rect &r, const std::string &text, const Style &style ) {
 	ButtonsToRender.push_back( ButtonRenderData( r, text, style ) );
 	if( r.Overlaps( m_PointerPos ) ) {
 		if( m_PointerDown ) {
-			return UI_START;
+			ui.activeID = id;
 		}
 		if( m_PointerUp ) {
-			return UI_END;
+			if( ui.activeID == id ) {
+				ui.activeID = -1;
+				return true;
+			}
 		}
-		return UI_HOVER;
 	}
-	return UI_NOHIT;
+	return false;
+}
+bool CApp::IMDraggable( int id, Rect &r, const std::string &text, const Style &style ) {
+	ButtonsToRender.push_back( ButtonRenderData( r, text, style ) );
+	if( r.Overlaps( m_PointerPos ) ) {
+		if( m_PointerDown ) {
+			ui.activeID = id;
+		}
+		if( m_PointerUp ) {
+			if( ui.activeID == id ) {
+				ui.activeID = -1;
+			}
+		}
+		if( ui.activeID == id ) {
+			r.left += m_PointerMove.x;
+			r.right += m_PointerMove.x;
+			r.top += m_PointerMove.y;
+			r.bottom += m_PointerMove.y;
+		}
+	}
+	return false;
 }

@@ -46,7 +46,7 @@ class CApp {
 		  IVec2 m_PointerPos;
 		  IVec2 m_PointerMove;
 
-		  int ui_active;
+		  UIContext ui;
 
     public:
         CApp();
@@ -63,7 +63,8 @@ class CApp {
     public:
         typedef std::vector<ButtonRenderData> ButtonVec;
         ButtonVec ButtonsToRender;
-        UI_STATE IMButton( const Rect &r, const TXT &text, const Style &style );
+        bool IMButton( int id, const Rect &r, const TXT &text, const Style &style );
+        bool IMDraggable( int id, Rect &r, const TXT &text, const Style &style );
 
   public:
     void Set2D();

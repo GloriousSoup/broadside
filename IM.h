@@ -13,6 +13,10 @@ enum UI_STATE {
 	UI_UNKNOWN
 };
 
+struct UIContext {
+	int activeID;
+};
+
 struct Rect { // for pixel space positioning
 	int left, right; // 0 is left
 	int top, bottom; // 0 is top
