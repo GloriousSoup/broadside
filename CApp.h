@@ -75,6 +75,7 @@ class CApp {
     void DrawRect( int x, int y, int w, int h, const Vec4 &colour );
 
     void Set3D();
+    void DrawSea();
     void DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation );
 };
 

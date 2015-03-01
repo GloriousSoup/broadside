@@ -1,6 +1,7 @@
 #include "CApp.h"
 
 GLShader gShipShader;
+GLShader gSeaShader;
 
 float x,y,z;
 #include "BadMesh.h" 
@@ -93,6 +94,7 @@ bool CApp::OnInit() {
 	RenderInit();
 
 	gShipShader.SetSources( "data/ship.vert", "data/ship.frag" );
+	gSeaShader.SetSources( "data/sea.vert", "data/sea.frag" );
 	const char *meshnames[] = {
 		"data/pirate-ship.obj",
 		"data/pirate-ship-large.obj",
@@ -116,6 +118,8 @@ bool CApp::OnInit() {
 	glMatrixMode(GL_MODELVIEW);
 
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
 	glLoadIdentity();
 
@@ -187,6 +191,7 @@ void CApp::OnLoop() {
 	y += speed * (kUp - kDown);
 	z += speed * (kForward - kBack);
 	gShipShader.ReloadIfNecessary();
+	gSeaShader.ReloadIfNecessary();
 	SDL_GetWindowSize( window, &win_width, &win_height );
 
 	{
@@ -294,14 +299,43 @@ void CApp::Set3D() {
 	GLSetPerspective( (float)M_PI / 4.0f, 1.0f, 1000.0f );
 	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
 }
+void CApp::DrawSea() {
+	gSeaShader.Use();
+	GLUploadPV();
+	GLSetModel( gIdentityMat );
+	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(ATTR_VERTEX);
+	glEnableVertexAttribArray(ATTR_COLOR);
+
+	float pPos[] = {
+		-1.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, 1.0f,
+		-1.0f, 0.0f, 1.0f
+	};
+	Vec3 colour( 0.05f, 0.2f, 0.3f );
+	float pCol[] = {
+		colour.x,colour.y,colour.z,
+		colour.x,colour.y,colour.z,
+		colour.x,colour.y,colour.z,
+		colour.x,colour.y,colour.z,
+	};
+	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pPos);
+	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pCol);
+
+	unsigned short pInds[] = { 0,1,2, 0,2,3 };
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, pInds);
+}
 void CApp::DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation ) {
+	gShipShader.Use();
+	GLUploadPV();
 	GLSetModel( pos, orientation );
 	ship[type]->DrawTriangles();
 }
 
 void CApp::OnRender() {
-#if 1
-	glClearColor( 0.1f,0.2f,0.3f, 1.0f );
+	glClearColor( 0.0f,0.1f,0.2f, 1.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Set2D();
@@ -330,46 +364,10 @@ void CApp::OnRender() {
 	TextToRender.clear();
 
 	Set3D();
+	DrawSea();
 	DrawShip( gZeroVec3, ST_BASE, z );
-
 	DrawShip( Vec3( -x, 0.0f, y ), ST_FAT, 0.0f );
-
-#else
-	glClearColor( 0.4f,0.4f,0.5f, 1.0f );
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	Perspective();
-
-	DefaultShader.Use();
-	glBegin(GL_QUADS);
-	glColor3f(1, 0, 0); glVertex3f(0, 0, 0);
-	glColor3f(1, 1, 0); glVertex3f(100, 0, 0);
-	glColor3f(1, 0, 1); glVertex3f(100, 100, 0);
-	glColor3f(1, 1, 1); glVertex3f(0, 100, 0);
-	glEnd();
-
-
-	gShipShader.Use();
-	static int a = 0;
-	a += 1;
-	GLSetOrtho(0.0f, win_width, 0.0f, win_height, -1.0f, 1.0f );
-	GLSetCamera( gIdentityMat );
-	GLSetModel( gIdentityMat );
-	if( a & 1 ) {
-		glBegin(GL_QUADS);
-		glColor3f(1, 0, 0); glVertex3f(x+0, y+0, 0);
-		glColor3f(1, 1, 0); glVertex3f(x+100, y+0, 0);
-		glColor3f(1, 0, 1); glVertex3f(x+100, y+100, 0);
-		glColor3f(1, 1, 1); glVertex3f(x+0, y+100, 0);
-		glEnd();
-	}
-
-	
-	GLSetPerspective( M_PI / 4.0f, 1.0f, 1000.0f );
-	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
-	GLSetModel( Vec3( x, y, z ), 0.0f );
-	ship->DrawTriangles();
-#endif
+	DrawSea();
 
 	SDL_GL_SwapWindow(window);
 }
