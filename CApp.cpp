@@ -208,26 +208,36 @@ void CApp::OnLoop() {
 		static Rect r4(200,300,100,200);
 		IMDraggable( 4, r4, "Movable R4", s );
 
-		TXTVec tv;
-		tv.push_back( "item 1" );
-		tv.push_back( "item 2" );
-		tv.push_back( "ninjas" );
-		tv.push_back( "item 4" );
-		tv.push_back( "item oops" );
-		tv.push_back( "emporiatus" );
-		tv.push_back( "kids" );
-		tv.push_back( "zombies" );
-		tv.push_back( "bunnies" );
-		tv.push_back( "kittens" );
-		tv.push_back( "cowboys" );
-		tv.push_back( "robots" );
-		tv.push_back( "pirates" );
-		tv.push_back( "gold" );
-		s.BGColour = Vec4( 0.0f, 0.0f, 0.0f, 1.0f );
-		s.TextColour = Vec4( 0.9f, 0.7f, 0.4f, 1.0f );
-		static float scrollPos = 0.0f;
-		Rect rs(100,300,300,350);
-		IMScrollable( 5, rs, scrollPos, tv, s );
+		Rect checkR(70,100,300,320);
+		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
+		s.TextColour = Vec4( gOneVec3, 1.0f );
+		static bool show = true;
+		text = show ? "hide" : "show";
+		if( IMButton( 6, checkR, text, s ) ) {
+			show = !show;
+		}
+		if( show ) {
+			TXTVec tv;
+			tv.push_back( "item 1" );
+			tv.push_back( "item 2" );
+			tv.push_back( "ninjas" );
+			tv.push_back( "item 4" );
+			tv.push_back( "item oops" );
+			tv.push_back( "emporiatus" );
+			tv.push_back( "kids" );
+			tv.push_back( "zombies" );
+			tv.push_back( "bunnies" );
+			tv.push_back( "kittens" );
+			tv.push_back( "cowboys" );
+			tv.push_back( "robots" );
+			tv.push_back( "pirates" );
+			tv.push_back( "gold" );
+			s.BGColour = Vec4( 0.0f, 0.0f, 0.0f, 1.0f );
+			s.TextColour = Vec4( 0.9f, 0.7f, 0.4f, 1.0f );
+			static float scrollPos = 0.0f;
+			Rect rs(100,300,300,350);
+			IMScrollable( 5, rs, scrollPos, tv, s );
+		}
 	}
 
 	m_PointerDown = false;
