@@ -3,7 +3,9 @@
 GLShader gShipShader;
 GLShader gSeaShader;
 
-float x,y,z;
+float x = 4.0f;
+float y = 2.0f;
+float z = 0.8f;
 #include "BadMesh.h" 
 BadMesh * ship[ST_NUM_ST];
 
@@ -294,6 +296,58 @@ void CApp::Set3D() {
 	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
 }
 void CApp::DrawSea() {
+#if 1
+	float t = SDL_GetTicks() * 0.001f;
+
+	gSeaShader.Use();
+	GLUploadPV();
+	GLSetModel( gIdentityMat );
+	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(ATTR_VERTEX);
+	glEnableVertexAttribArray(ATTR_COLOR);
+
+	const size_t TILES = 16;
+	const size_t WIDE = TILES + 1;
+	const size_t VERT_COUNT = WIDE * WIDE;
+	const float SEA_SCALE = 1.0f;
+
+	Vec3 pPos[VERT_COUNT];
+	Vec3 pCol[VERT_COUNT];
+	float xoff = 0.0f - WIDE * 0.5f;
+	float zoff = 0.0f - WIDE * 0.5f;
+	for( size_t z = 0; z < WIDE; ++z ) {
+		for( size_t x = 0; x < WIDE; ++x ) {
+			size_t i = x + z * WIDE;
+			float rx = ( x + xoff ) * SEA_SCALE;
+			float rz = ( z + zoff ) * SEA_SCALE;
+			float h = sin( t + rx * 1.2f + rz * 1.5f ) * 0.2f;
+			pPos[i] = Vec3( rx, h, rz );
+			float adj = sin( i ) * 0.2f;
+			pCol[i] = Vec3( 0.1f, 0.3f, 0.4f ) + Vec3( adj );
+		}
+	}
+
+	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pPos);
+	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pCol);
+
+	const size_t indexCount = 6 * TILES * TILES;
+	unsigned short pInds[ indexCount ];
+	for( size_t z = 0; z < TILES; ++z ) {
+		for( size_t x = 0; x < TILES; ++x ) {
+			size_t i = ( x + z * TILES ) * 6;
+			int v = x + z * WIDE;
+			pInds[i+0] = v + 0;
+			pInds[i+1] = v + 1;
+			pInds[i+2] = v + 1+WIDE;
+
+			pInds[i+3] = v + 0;
+			pInds[i+4] = v + 1+WIDE;
+			pInds[i+5] = v + WIDE;
+		}
+	}
+	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, pInds);
+#else
 	gSeaShader.Use();
 	GLUploadPV();
 	GLSetModel( gIdentityMat );
@@ -320,6 +374,7 @@ void CApp::DrawSea() {
 
 	unsigned short pInds[] = { 0,1,2, 0,2,3 };
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, pInds);
+#endif
 }
 void CApp::DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation ) {
 	gShipShader.Use();
