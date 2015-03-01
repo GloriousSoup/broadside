@@ -6,6 +6,7 @@
 #include <vector>
 
 typedef std::string TXT;
+typedef std::vector<TXT> TXTVec;
 
 #endif
 

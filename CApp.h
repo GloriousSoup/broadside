@@ -62,9 +62,12 @@ class CApp {
 
     public:
         typedef std::vector<ButtonRenderData> ButtonVec;
+        typedef std::vector<TextRenderData> TextVec;
         ButtonVec ButtonsToRender;
+        TextVec TextToRender;
         bool IMButton( int id, const Rect &r, const TXT &text, const Style &style );
         bool IMDraggable( int id, Rect &r, const TXT &text, const Style &style );
+        bool IMScrollable( int id, const Rect &r, float &scrollState, const TXTVec &text, const Style &style );
 
   public:
     void Set2D();

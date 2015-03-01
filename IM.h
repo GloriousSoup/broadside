@@ -43,4 +43,11 @@ struct ButtonRenderData {
 	ButtonRenderData( const Rect &_r, const TXT &_text, const Style &_s ) : r(_r), text(_text), s(_s) {}
 };
 
+struct TextRenderData {
+	IVec2 p;
+	TXT text;
+	Style s;
+	TextRenderData( const IVec2 &_p, const TXT &_text, const Style &_s ) : p(_p), text(_text), s(_s) {}
+};
+
 #endif

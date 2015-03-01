@@ -207,6 +207,27 @@ void CApp::OnLoop() {
 		s.TextColour = Vec4( 0.0f, 0.1f, 0.9f, 1.0f );
 		static Rect r4(200,300,100,200);
 		IMDraggable( 4, r4, "Movable R4", s );
+
+		TXTVec tv;
+		tv.push_back( "item 1" );
+		tv.push_back( "item 2" );
+		tv.push_back( "ninjas" );
+		tv.push_back( "item 4" );
+		tv.push_back( "item oops" );
+		tv.push_back( "emporiatus" );
+		tv.push_back( "kids" );
+		tv.push_back( "zombies" );
+		tv.push_back( "bunnies" );
+		tv.push_back( "kittens" );
+		tv.push_back( "cowboys" );
+		tv.push_back( "robots" );
+		tv.push_back( "pirates" );
+		tv.push_back( "gold" );
+		s.BGColour = Vec4( 0.0f, 0.0f, 0.0f, 1.0f );
+		s.TextColour = Vec4( 0.9f, 0.7f, 0.4f, 1.0f );
+		static float scrollPos = 0.0f;
+		Rect rs(100,300,300,350);
+		IMScrollable( 5, rs, scrollPos, tv, s );
 	}
 
 	m_PointerDown = false;
@@ -272,15 +293,25 @@ void CApp::OnRender() {
 		Rect r = i->r;
 		Vec4 c = Vec4(1.0f);
 		if( i->s.BGColour ) c = i->s.BGColour;
+		GLSetModel(gIdentityMat);
 		DrawRect( r.left, r.top, r.right - r.left, r.bottom - r.top, c );
 		Mat44 m = gIdentityMat;
 		m.w.x = (float)r.left;
 		m.w.y = (float)r.top;
 
 		FontPrint( m, i->text.c_str(), i->s.TextColour );
-		GLSetModel(gIdentityMat);
 	}
 	ButtonsToRender.clear();
+	for( TextVec::iterator i = TextToRender.begin(); i != TextToRender.end(); ++i ) {
+		IVec2 p = i->p;
+		Vec4 c = Vec4(1.0f);
+		Mat44 m = gIdentityMat;
+		m.w.x = (float)p.x;
+		m.w.y = (float)p.y;
+
+		FontPrint( m, i->text.c_str(), i->s.TextColour );
+	}
+	TextToRender.clear();
 
 	Set3D();
 	DrawShip( gZeroVec3, ST_BASE, z );
@@ -330,15 +361,14 @@ void CApp::OnRender() {
 //std::vector<ButtonRenderData> ButtonsToRender;
 bool CApp::IMButton( int id, const Rect &r, const std::string &text, const Style &style ) {
 	ButtonsToRender.push_back( ButtonRenderData( r, text, style ) );
-	if( r.Overlaps( m_PointerPos ) ) {
-		if( m_PointerDown ) {
-			ui.activeID = id;
-		}
-		if( m_PointerUp ) {
-			if( ui.activeID == id ) {
-				ui.activeID = -1;
-				return true;
-			}
+	bool overlap = r.Overlaps( m_PointerPos );
+	if( m_PointerDown && overlap ) {
+		ui.activeID = id;
+	}
+	if( m_PointerUp ) {
+		if( ui.activeID == id ) {
+			ui.activeID = -1;
+			return overlap;
 		}
 	}
 	return false;
@@ -349,17 +379,48 @@ bool CApp::IMDraggable( int id, Rect &r, const std::string &text, const Style &s
 		if( m_PointerDown ) {
 			ui.activeID = id;
 		}
-		if( m_PointerUp ) {
-			if( ui.activeID == id ) {
-				ui.activeID = -1;
-			}
-		}
+	}
+	if( m_PointerUp ) {
 		if( ui.activeID == id ) {
-			r.left += m_PointerMove.x;
-			r.right += m_PointerMove.x;
-			r.top += m_PointerMove.y;
-			r.bottom += m_PointerMove.y;
+			ui.activeID = -1;
 		}
+	}
+	if( ui.activeID == id ) {
+		r.left += m_PointerMove.x;
+		r.right += m_PointerMove.x;
+		r.top += m_PointerMove.y;
+		r.bottom += m_PointerMove.y;
+	}
+	return false;
+}
+bool CApp::IMScrollable( int id, const Rect &r, float &scrollState, const TXTVec &text, const Style &style ) {
+	ButtonsToRender.push_back( ButtonRenderData( r, "", style ) );
+	for( size_t i = 0; i < text.size(); ++i ) {
+		float topPos = - scrollState + i * 8.0f;
+		float bottomPos = - scrollState + i * 8.0f + 8.0f;
+		if( topPos >= 0.0f && bottomPos < r.bottom - r.top ) {
+			TextToRender.push_back( TextRenderData( IVec2( r.left, r.top + topPos ), text[i], style ) );
+		}
+	}
+	const float scrollScale = 8.0f;
+	const float maxScroll = scrollScale * text.size();
+
+	if( r.Overlaps( m_PointerPos ) ) {
+		if( m_PointerDown ) {
+			ui.activeID = id;
+		}
+	}
+	if( m_PointerUp ) {
+		if( ui.activeID == id ) {
+			ui.activeID = -1;
+		}
+	}
+	if( ui.activeID == id ) {
+		scrollState -= m_PointerMove.y;
+		if( scrollState < 0.0f )
+			scrollState = 0.0f;
+		if( scrollState > maxScroll )
+			scrollState = maxScroll;
 	}
 	return false;
 }
