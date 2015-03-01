@@ -45,6 +45,7 @@ class CApp {
 		  bool m_PointerUp;
 		  IVec2 m_PointerPos;
 		  IVec2 m_PointerMove;
+		  IVec2 m_PointerWheel;
 
 		  UIContext ui;
 

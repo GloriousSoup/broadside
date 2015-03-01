@@ -168,6 +168,11 @@ void CApp::OnEvent(SDL_Event* Event) {
 			//printf( "MOUSEMOTION %i,%i\n", m_PointerMove.x, m_PointerMove.y );
 		}
 		break;
+		case SDL_MOUSEWHEEL: {
+			m_PointerWheel += IVec2( Event->wheel.x, Event->wheel.y );
+			//printf( "MOUSEMOTION %i,%i\n", m_PointerMove.x, m_PointerMove.y );
+		}
+		break;
 	}
 }
 
@@ -243,6 +248,7 @@ void CApp::OnLoop() {
 	m_PointerDown = false;
 	m_PointerUp = false;
 	m_PointerMove = IVec2(0,0);
+	m_PointerWheel = IVec2(0,0);
 }
 
 void CApp::OnCleanup() {
@@ -404,20 +410,24 @@ bool CApp::IMDraggable( int id, Rect &r, const std::string &text, const Style &s
 	return false;
 }
 bool CApp::IMScrollable( int id, const Rect &r, float &scrollState, const TXTVec &text, const Style &style ) {
+	const float lineHeight = 8.0f;
 	ButtonsToRender.push_back( ButtonRenderData( r, "", style ) );
 	for( size_t i = 0; i < text.size(); ++i ) {
-		float topPos = - scrollState + i * 8.0f;
-		float bottomPos = - scrollState + i * 8.0f + 8.0f;
+		float topPos = - scrollState + i * lineHeight;
+		float bottomPos = - scrollState + i * lineHeight + lineHeight;
 		if( topPos >= 0.0f && bottomPos < r.bottom - r.top ) {
 			TextToRender.push_back( TextRenderData( IVec2( r.left, r.top + topPos ), text[i], style ) );
 		}
 	}
-	const float scrollScale = 8.0f;
-	const float maxScroll = scrollScale * text.size();
+	const float endScroll = lineHeight * text.size() - (r.bottom - r.top - 1);
+	const float maxScroll = endScroll > 0.0f ? endScroll : 0.0f;
 
 	if( r.Overlaps( m_PointerPos ) ) {
 		if( m_PointerDown ) {
 			ui.activeID = id;
+		}
+		if( ui.activeID == -1 ) {
+			scrollState -= m_PointerWheel.y * 4.0f;
 		}
 	}
 	if( m_PointerUp ) {
@@ -427,10 +437,10 @@ bool CApp::IMScrollable( int id, const Rect &r, float &scrollState, const TXTVec
 	}
 	if( ui.activeID == id ) {
 		scrollState -= m_PointerMove.y;
-		if( scrollState < 0.0f )
-			scrollState = 0.0f;
-		if( scrollState > maxScroll )
-			scrollState = maxScroll;
 	}
+	if( scrollState < 0.0f )
+		scrollState = 0.0f;
+	if( scrollState > maxScroll )
+		scrollState = maxScroll;
 	return false;
 }
