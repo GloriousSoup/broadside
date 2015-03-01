@@ -18,7 +18,8 @@ LIBS=-Wl,-Bsymbolic-functions \
 
 RAW_COMMONOBJECTS=CApp.o render.o \
 	SimpleMesh.o util.o assetloader.o stbi_image.o \
-	BadMesh.o geom.o FontRender.o
+	BadMesh.o geom.o FontRender.o \
+	gui.o
 
 RAW_TARGETOBJECTS=$(TARGETS:%=%.o)
 COMMONOBJECTS=$(RAW_COMMONOBJECTS:%=build/%)

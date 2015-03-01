@@ -8,14 +8,12 @@ float x,y,z;
 BadMesh * ship[ST_NUM_ST];
 
 #include "FontRender.h"
+#include "gui.h"
 
 CApp::CApp() {
 	window = 0;
 	context = 0;
 	Running = true;
-	m_PointerDown = false;
-	m_PointerUp = false;
-	ui.activeID = -1;
 }
 
 int CApp::OnExecute() {
@@ -155,25 +153,25 @@ void CApp::OnEvent(SDL_Event* Event) {
 		}
 		break;
 		case SDL_MOUSEBUTTONDOWN: {
-			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
+			ui.m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
 			//printf( "MOUSEBUTTONDOWN %i,%i\n", m_PointerMove.x, m_PointerMove.y );
-			m_PointerDown = true;
+			ui.m_PointerDown = true;
 		}
 		break;
 		case SDL_MOUSEBUTTONUP: {
-			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
-			m_PointerUp = true;
+			ui.m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
+			ui.m_PointerUp = true;
 			//printf( "MOUSEBUTTONUP %i,%i\n", m_PointerMove.x, m_PointerMove.y );
 		}
 		break;
 		case SDL_MOUSEMOTION: {
-			m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
-			m_PointerMove += IVec2( Event->motion.xrel, Event->motion.yrel );
+			ui.m_PointerPos = IVec2( Event->motion.x, Event->motion.y );
+			ui.m_PointerMove += IVec2( Event->motion.xrel, Event->motion.yrel );
 			//printf( "MOUSEMOTION %i,%i\n", m_PointerMove.x, m_PointerMove.y );
 		}
 		break;
 		case SDL_MOUSEWHEEL: {
-			m_PointerWheel += IVec2( Event->wheel.x, Event->wheel.y );
+			ui.m_PointerWheel += IVec2( Event->wheel.x, Event->wheel.y );
 			//printf( "MOUSEMOTION %i,%i\n", m_PointerMove.x, m_PointerMove.y );
 		}
 		break;
@@ -201,29 +199,29 @@ void CApp::OnLoop() {
 		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
 		TXT text = "GO LEFT NOW";
 		TXT text2 = "GO RIGHT SOON";
-		if( IMButton( 1, r, text, s ) ) {
+		if( IMButton( ui, 1, r, text, s ) ) {
 			x -= 1.0f;
 		}
 		s.TextColour = Vec4( 1.0f, 0.0f, 0.0f, 1.0f );
-		if( IMButton( 2, r2, text2, s ) ) {
+		if( IMButton( ui, 2, r2, text2, s ) ) {
 			x += 1.0f;
 		}
 
 		s.BGColour = Vec4( 0.8f, 0.8f, 0.8f, 1.0f );
 		s.TextColour = Vec4( 0.0f, 0.1f, 0.4f, 1.0f );
 		static Rect r3(100,200,100,200);
-		IMDraggable( 3, r3, "Movable R3", s );
+		IMDraggable( ui, 3, r3, "Movable R3", s );
 		s.BGColour = Vec4( 0.5f, 0.5f, 0.5f, 1.0f );
 		s.TextColour = Vec4( 0.0f, 0.1f, 0.9f, 1.0f );
 		static Rect r4(200,300,100,200);
-		IMDraggable( 4, r4, "Movable R4", s );
+		IMDraggable( ui, 4, r4, "Movable R4", s );
 
 		Rect checkR(70,100,300,320);
 		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
 		s.TextColour = Vec4( gOneVec3, 1.0f );
 		static bool show = true;
 		text = show ? "hide" : "show";
-		if( IMButton( 6, checkR, text, s ) ) {
+		if( IMButton( ui, 6, checkR, text, s ) ) {
 			show = !show;
 		}
 		if( show ) {
@@ -246,14 +244,10 @@ void CApp::OnLoop() {
 			s.TextColour = Vec4( 0.9f, 0.7f, 0.4f, 1.0f );
 			static float scrollPos = 0.0f;
 			Rect rs(100,300,300,350);
-			IMScrollable( 5, rs, scrollPos, tv, s );
+			IMScrollable( ui, 5, rs, scrollPos, tv, s );
 		}
 	}
 
-	m_PointerDown = false;
-	m_PointerUp = false;
-	m_PointerMove = IVec2(0,0);
-	m_PointerWheel = IVec2(0,0);
 }
 
 void CApp::OnCleanup() {
@@ -339,29 +333,7 @@ void CApp::OnRender() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Set2D();
-	for( ButtonVec::iterator i = ButtonsToRender.begin(); i != ButtonsToRender.end(); ++i ) {
-		Rect r = i->r;
-		Vec4 c = Vec4(1.0f);
-		if( i->s.BGColour ) c = i->s.BGColour;
-		GLSetModel(gIdentityMat);
-		DrawRect( r.left, r.top, r.right - r.left, r.bottom - r.top, c );
-		Mat44 m = gIdentityMat;
-		m.w.x = (float)r.left;
-		m.w.y = (float)r.top;
-
-		FontPrint( m, i->text.c_str(), i->s.TextColour );
-	}
-	ButtonsToRender.clear();
-	for( TextVec::iterator i = TextToRender.begin(); i != TextToRender.end(); ++i ) {
-		IVec2 p = i->p;
-		Vec4 c = Vec4(1.0f);
-		Mat44 m = gIdentityMat;
-		m.w.x = (float)p.x;
-		m.w.y = (float)p.y;
-
-		FontPrint( m, i->text.c_str(), i->s.TextColour );
-	}
-	TextToRender.clear();
+	DrawGUI( ui, *this );
 
 	Set3D();
 	DrawSea();
@@ -372,73 +344,3 @@ void CApp::OnRender() {
 	SDL_GL_SwapWindow(window);
 }
 
-//std::vector<ButtonRenderData> ButtonsToRender;
-bool CApp::IMButton( int id, const Rect &r, const std::string &text, const Style &style ) {
-	ButtonsToRender.push_back( ButtonRenderData( r, text, style ) );
-	bool overlap = r.Overlaps( m_PointerPos );
-	if( m_PointerDown && overlap ) {
-		ui.activeID = id;
-	}
-	if( m_PointerUp ) {
-		if( ui.activeID == id ) {
-			ui.activeID = -1;
-			return overlap;
-		}
-	}
-	return false;
-}
-bool CApp::IMDraggable( int id, Rect &r, const std::string &text, const Style &style ) {
-	ButtonsToRender.push_back( ButtonRenderData( r, text, style ) );
-	if( r.Overlaps( m_PointerPos ) ) {
-		if( m_PointerDown ) {
-			ui.activeID = id;
-		}
-	}
-	if( m_PointerUp ) {
-		if( ui.activeID == id ) {
-			ui.activeID = -1;
-		}
-	}
-	if( ui.activeID == id ) {
-		r.left += m_PointerMove.x;
-		r.right += m_PointerMove.x;
-		r.top += m_PointerMove.y;
-		r.bottom += m_PointerMove.y;
-	}
-	return false;
-}
-bool CApp::IMScrollable( int id, const Rect &r, float &scrollState, const TXTVec &text, const Style &style ) {
-	const float lineHeight = 8.0f;
-	ButtonsToRender.push_back( ButtonRenderData( r, "", style ) );
-	for( size_t i = 0; i < text.size(); ++i ) {
-		float topPos = - scrollState + i * lineHeight;
-		float bottomPos = - scrollState + i * lineHeight + lineHeight;
-		if( topPos >= 0.0f && bottomPos < r.bottom - r.top ) {
-			TextToRender.push_back( TextRenderData( IVec2( r.left, r.top + topPos ), text[i], style ) );
-		}
-	}
-	const float endScroll = lineHeight * text.size() - (r.bottom - r.top - 1);
-	const float maxScroll = endScroll > 0.0f ? endScroll : 0.0f;
-
-	if( r.Overlaps( m_PointerPos ) ) {
-		if( m_PointerDown ) {
-			ui.activeID = id;
-		}
-		if( ui.activeID == -1 ) {
-			scrollState -= m_PointerWheel.y * 4.0f;
-		}
-	}
-	if( m_PointerUp ) {
-		if( ui.activeID == id ) {
-			ui.activeID = -1;
-		}
-	}
-	if( ui.activeID == id ) {
-		scrollState -= m_PointerMove.y;
-	}
-	if( scrollState < 0.0f )
-		scrollState = 0.0f;
-	if( scrollState > maxScroll )
-		scrollState = maxScroll;
-	return false;
-}

@@ -279,6 +279,10 @@ extern Vec4 gYVec4;
 extern Vec4 gZVec4;
 extern Vec4 gWVec4;
 extern Mat44 gIdentityMat;
+extern IVec2 gXIVec2;
+extern IVec2 gYIVec2;
+extern IVec2 gZeroIVec2;
+extern IVec2 gOneIVec2;
 
 inline float clamp( float val, float low, float high ) {
 	return val > low ? val < high ? val : high : low;

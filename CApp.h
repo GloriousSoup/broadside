@@ -31,7 +31,7 @@ enum SHIP_TYPE {
 };
 
 #include "broadside.h"
-#include "IM.h"
+#include "gui.h"
 
 //==============================================================================
 class CApp {
@@ -41,13 +41,7 @@ class CApp {
         SDL_Window * window;
         SDL_GLContext context;
 
-		  bool m_PointerDown;
-		  bool m_PointerUp;
-		  IVec2 m_PointerPos;
-		  IVec2 m_PointerMove;
-		  IVec2 m_PointerWheel;
-
-		  UIContext ui;
+		  UIState ui;
 
     public:
         CApp();
@@ -60,15 +54,6 @@ class CApp {
         void OnLoop();
         void OnRender();
         void OnCleanup();
-
-    public:
-        typedef std::vector<ButtonRenderData> ButtonVec;
-        typedef std::vector<TextRenderData> TextVec;
-        ButtonVec ButtonsToRender;
-        TextVec TextToRender;
-        bool IMButton( int id, const Rect &r, const TXT &text, const Style &style );
-        bool IMDraggable( int id, Rect &r, const TXT &text, const Style &style );
-        bool IMScrollable( int id, const Rect &r, float &scrollState, const TXTVec &text, const Style &style );
 
   public:
     void Set2D();

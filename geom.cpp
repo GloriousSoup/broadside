@@ -14,6 +14,11 @@ Vec4 gZeroVec4( 0.0f, 0.0f, 0.0f, 0.0f );
 
 Mat44 gIdentityMat( gXVec4, gYVec4, gZVec4, gWVec4 );
 
+IVec2 gXIVec2(1,0);
+IVec2 gYIVec2(0,1);
+IVec2 gZeroIVec2(0,0);
+IVec2 gOneIVec2(1,1);
+
 float Mat44::Determinant() const
 {
 	return 0
