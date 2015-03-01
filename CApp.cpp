@@ -296,7 +296,6 @@ void CApp::Set3D() {
 	GLSetCamera( Vec3( 0.0f, 4.0f, -6.0f ), gZeroVec3 );
 }
 void CApp::DrawSea() {
-#if 1
 	float t = SDL_GetTicks() * 0.001f;
 
 	gSeaShader.Use();
@@ -347,34 +346,6 @@ void CApp::DrawSea() {
 		}
 	}
 	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, pInds);
-#else
-	gSeaShader.Use();
-	GLUploadPV();
-	GLSetModel( gIdentityMat );
-	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(ATTR_VERTEX);
-	glEnableVertexAttribArray(ATTR_COLOR);
-
-	float pPos[] = {
-		-1.0f, 0.0f, -1.0f,
-		1.0f, 0.0f, -1.0f,
-		1.0f, 0.0f, 1.0f,
-		-1.0f, 0.0f, 1.0f
-	};
-	Vec3 colour( 0.05f, 0.2f, 0.3f );
-	float pCol[] = {
-		colour.x,colour.y,colour.z,
-		colour.x,colour.y,colour.z,
-		colour.x,colour.y,colour.z,
-		colour.x,colour.y,colour.z,
-	};
-	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pPos);
-	glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, pCol);
-
-	unsigned short pInds[] = { 0,1,2, 0,2,3 };
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, pInds);
-#endif
 }
 void CApp::DrawShip( const Vec3 &pos, SHIP_TYPE type, float orientation ) {
 	gShipShader.Use();
