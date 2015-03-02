@@ -11,7 +11,6 @@ BadMesh * ship[ST_NUM_ST];
 
 #include "FontRender.h"
 #include "gui.h"
-
 CApp::CApp() {
 	window = 0;
 	context = 0;
@@ -61,15 +60,15 @@ bool CApp::OnInit() {
 
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
 	int S = 800/16;
-	int ww = 16*S;
-	int hh = 9*S;
+	m_screenW = 16*S;
+	m_screenH = 9*S;
 
-	window = SDL_CreateWindow("thing", 10, 10, ww, hh, SDL_WINDOW_OPENGL );
+	window = SDL_CreateWindow("thing", 40, 40, m_screenW, m_screenH, SDL_WINDOW_OPENGL );
 
 	if(window == NULL) {
 		return false;
@@ -91,6 +90,7 @@ bool CApp::OnInit() {
 	//}
 #endif
 
+	timeManager.Init();
 	RenderInit();
 
 	gShipShader.SetSources( "data/ship.vert", "data/ship.frag" );
@@ -108,12 +108,12 @@ bool CApp::OnInit() {
 
 	glClearColor(0, 0, 0, 0);
 
-	glViewport(0, 0, ww, hh);
+	glViewport(0, 0, m_screenW, m_screenH);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glOrtho(0, ww, hh, 0, 1, -1);
+	glOrtho(0, m_screenW, m_screenH, 0, 1, -1);
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -183,8 +183,12 @@ void CApp::OnEvent(SDL_Event* Event) {
 int win_width;
 int win_height;
 
+
 void CApp::OnLoop() {
 	RenderUpdate();
+
+	timeManager.Update();
+	UpdateGUI( timeManager.currentDelta );
 
 	float speed = 0.1f;
 	x += speed * (kRight - kLeft);
@@ -264,6 +268,12 @@ void CApp::Set2D() {
 	GLSetCamera( gIdentityMat );
 	GLSetModel( gIdentityMat );
 }
+
+void CApp::DrawRect( Rect &rect, const Vec4 &colour )
+{
+	DrawRect( rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, colour );
+}
+
 void CApp::DrawRect( int x, int y, int w, int h, const Vec4 &colour ) {
 	DefaultShader.Use();
 	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -322,7 +332,7 @@ void CApp::DrawSea() {
 			float rz = ( z + zoff ) * SEA_SCALE;
 			float h = sin( t + rx * 1.2f + rz * 1.5f ) * 0.2f;
 			pPos[i] = Vec3( rx, h, rz );
-			float adj = sin( i ) * 0.2f;
+			float adj = sin( (float)i ) * 0.2f;
 			pCol[i] = Vec3( 0.1f, 0.3f, 0.4f ) + Vec3( adj );
 		}
 	}

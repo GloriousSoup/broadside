@@ -31,7 +31,10 @@ enum SHIP_TYPE {
 };
 
 #include "broadside.h"
+#include "TimeManager.h"
 #include "gui.h"
+
+
 
 //==============================================================================
 class CApp {
@@ -56,8 +59,12 @@ class CApp {
         void OnCleanup();
 
   public:
-    void Set2D();
+	  int m_screenW, m_screenH;
+	  TimeManager timeManager;
+
+	  void Set2D();
     void DrawRect( int x, int y, int w, int h, const Vec4 &colour );
+    void DrawRect( Rect &rect, const Vec4 &colour );
 
     void Set3D();
     void DrawSea();

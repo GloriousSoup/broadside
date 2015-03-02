@@ -2,6 +2,8 @@
 #include "CApp.h"
 #include "FontRender.h"
 
+#include "GUI_Sidebar.h"
+
 struct ButtonRenderData {
 	Rect r;
 	TXT text;
@@ -92,7 +94,14 @@ bool IMScrollable( UIState &ui, int id, const Rect &r, float &scrollState, const
 	return false;
 }
 
+void UpdateGUI( float fDelta ) {
+	testSidePanel.Update( fDelta );
+}
+
 void DrawGUI( UIState &ui, CApp &app ) {
+
+	testSidePanel.Render( ui, app );
+
 	for( ButtonVec::iterator i = ButtonsToRender.begin(); i != ButtonsToRender.end(); ++i ) {
 		Rect r = i->r;
 		Vec4 c = Vec4(1.0f);

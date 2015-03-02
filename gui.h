@@ -44,6 +44,7 @@ struct Rect { // for pixel space positioning
 		return true;
 	}
 	Rect( int l, int r, int t, int b ) : left(l), right(r), top(t), bottom(b) {}
+	Rect() : left(0), right(0), top(0), bottom(0) {}
 };
 
 struct Style {
@@ -52,11 +53,15 @@ struct Style {
 	Optional<float> TextSize;
 };
 
+
 bool IMButton( UIState &ui, int id, const Rect &r, const TXT &text, const Style &style );
+
 bool IMDraggable( UIState &ui, int id, Rect &r, const TXT &text, const Style &style );
 bool IMScrollable( UIState &ui, int id, const Rect &r, float &scrollState, const TXTVec &text, const Style &style );
 
 class CApp;
+void UpdateGUI( float fDelta );
 void DrawGUI( UIState &ui, CApp &app );
+
 
 #endif

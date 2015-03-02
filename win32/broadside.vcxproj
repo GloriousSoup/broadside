@@ -41,6 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>C:\cygwin\home\simon\broadside;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\cygwin\home\simon\broadside;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -82,9 +84,13 @@
     <ClCompile Include="..\CApp.cpp" />
     <ClCompile Include="..\FontRender.cpp" />
     <ClCompile Include="..\geom.cpp" />
+    <ClCompile Include="..\gui.cpp" />
+    <ClCompile Include="..\GUI_Sidebar.cpp" />
+    <ClCompile Include="..\GUI_Tools.cpp" />
     <ClCompile Include="..\render.cpp" />
     <ClCompile Include="..\SimpleMesh.cpp" />
     <ClCompile Include="..\stbi_image.cpp" />
+    <ClCompile Include="..\TimeManager.cpp" />
     <ClCompile Include="..\util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -95,10 +101,14 @@
     <ClInclude Include="..\CApp.h" />
     <ClInclude Include="..\FontRender.h" />
     <ClInclude Include="..\geom.h" />
+    <ClInclude Include="..\gui.h" />
+    <ClInclude Include="..\GUI_Sidebar.h" />
+    <ClInclude Include="..\GUI_Tools.h" />
     <ClInclude Include="..\IM.h" />
     <ClInclude Include="..\render.h" />
     <ClInclude Include="..\SimpleMesh.h" />
     <ClInclude Include="..\stbi_image.h" />
+    <ClInclude Include="..\TimeManager.h" />
     <ClInclude Include="..\ttycolours.h" />
     <ClInclude Include="..\util.h" />
   </ItemGroup>
