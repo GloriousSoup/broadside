@@ -42,7 +42,7 @@ void SidePanel::Render( UIState &ui, CApp &app )
 	Style s;
 	s.BGColour = Vec4( 0.6f, 0.6f, 0.6f, 1.0f );
 
-	if( IMButton( ui, 69, showButton, "", s ) ) 
+	if( IMButton( ui, en_butID_testSidebar, showButton, "", s ) ) 
 	{
 		isOpen= !isOpen;
 	}

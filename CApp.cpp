@@ -205,31 +205,32 @@ void CApp::OnLoop() {
 		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
 		TXT text = "GO LEFT NOW";
 		TXT text2 = "GO RIGHT SOON";
-		if( IMButton( ui, 1, r, text, s ) ) {
+		if( IMButton( ui, en_butID_testLeft, r, text, s ) ) {
 			x -= 1.0f;
 		}
 		s.TextColour = Vec4( 1.0f, 0.0f, 0.0f, 1.0f );
-		if( IMButton( ui, 2, r2, text2, s ) ) {
+		if( IMButton( ui, en_butID_testRight, r2, text2, s ) ) {
 			x += 1.0f;
 		}
 
 		s.BGColour = Vec4( 0.8f, 0.8f, 0.8f, 1.0f );
 		s.TextColour = Vec4( 0.0f, 0.1f, 0.4f, 1.0f );
 		static Rect r3(100,200,100,200);
-		IMDraggable( ui, 3, r3, "Movable R3", s );
+		IMDraggable( ui, en_butID_testDragA, r3, "Movable R3", s );
 		s.BGColour = Vec4( 0.5f, 0.5f, 0.5f, 1.0f );
 		s.TextColour = Vec4( 0.0f, 0.1f, 0.9f, 1.0f );
 		static Rect r4(200,300,100,200);
-		IMDraggable( ui, 4, r4, "Movable R4", s );
+		IMDraggable( ui, en_butID_testDragB, r4, "Movable R4", s );
 
 		Rect checkR(70,100,300,320);
 		s.BGColour = Vec4( 0.2f, 0.2f, 0.2f, 1.0f );
 		s.TextColour = Vec4( gOneVec3, 1.0f );
 		static bool show = true;
 		text = show ? "hide" : "show";
-		if( IMButton( ui, 6, checkR, text, s ) ) {
+		if( IMButton( ui, en_butID_testScrollbarShow, checkR, text, s ) ) {
 			show = !show;
 		}
+
 		if( show ) {
 			TXTVec tv;
 			tv.push_back( "item 1" );
@@ -250,7 +251,7 @@ void CApp::OnLoop() {
 			s.TextColour = Vec4( 0.9f, 0.7f, 0.4f, 1.0f );
 			static float scrollPos = 0.0f;
 			Rect rs(100,300,300,350);
-			IMScrollable( ui, 5, rs, scrollPos, tv, s );
+			IMScrollable( ui, en_butID_testScrollbar, rs, scrollPos, tv, s );
 		}
 	}
 

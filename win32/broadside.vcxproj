@@ -85,6 +85,7 @@
     <ClCompile Include="..\FontRender.cpp" />
     <ClCompile Include="..\geom.cpp" />
     <ClCompile Include="..\gui.cpp" />
+    <ClCompile Include="..\GUI_Navigator.cpp" />
     <ClCompile Include="..\GUI_Sidebar.cpp" />
     <ClCompile Include="..\GUI_Tools.cpp" />
     <ClCompile Include="..\render.cpp" />
@@ -102,6 +103,8 @@
     <ClInclude Include="..\FontRender.h" />
     <ClInclude Include="..\geom.h" />
     <ClInclude Include="..\gui.h" />
+    <ClInclude Include="..\GUI_EasingCurves.h" />
+    <ClInclude Include="..\GUI_Navigator.h" />
     <ClInclude Include="..\GUI_Sidebar.h" />
     <ClInclude Include="..\GUI_Tools.h" />
     <ClInclude Include="..\IM.h" />

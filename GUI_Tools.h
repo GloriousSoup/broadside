@@ -35,6 +35,21 @@ private:
 	float truePcnt;
 };
 
+//	Buttons with a changing animation state.
+/*
+struct InterpButton
+{
+	bool isPressed;
+	float pressPcnt;
+
+	bool isActivated;
+	float activationPcnt;
+
+	void Update( UIState &ui, E_ButtonIDs eID );
+
+};
+*/
+
 
 struct Interpolator
 {

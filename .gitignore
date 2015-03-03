@@ -2,5 +2,7 @@
 build
 tags
 win32/Debug/
+win32/broadside.sdf
+win32/broadside.opensdf
 win32/broadside.vcxproj.user
 win32/ipch/
